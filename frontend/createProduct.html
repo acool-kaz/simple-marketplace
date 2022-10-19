@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Product</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    .form {
+        width: 300px;
+        display: flex;
+        flex-direction: column;
+        margin: 10px auto;
+        gap: 15px;
+    }
+
+    .pr-input {
+        display: flex;
+        justify-content: space-between;
+    }
+</style>
+
+<body>
+    <div class="form">
+        <div class="pr-input"><span>Name</span><input id="name" type="text" required></div>
+        <div class="pr-input"><span>Description</span><textarea id="description" cols="30" rows="10" required></textarea></div>
+        <div class="pr-input"><span>Tags</span><input id="tags" type="text" required></div>
+        <div class="pr-input"><span>Price</span><input id="price" type="number" required></div>
+        <button class="create">Create</button>
+    </div>
+</body>
+<script>
+    document.querySelector('.create').addEventListener('click', () => {
+        const token = localStorage.getItem('token')
+        if (token == null) {
+            location.replace("./index.html")
+            alert('pls login')
+            return
+        }
+        var data = {}
+        var input = document.querySelectorAll('input')
+        var textarea = document.querySelector('textarea')
+
+        input.forEach(el => {
+            if (el.id == 'tags') {
+                data[el.id] = el.value.split(' ')
+            } else {
+                data[el.id] = el.value
+            }
+        });
+        data[textarea.id] = textarea.value
+        data['price'] = parseInt(data['price'])
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://localhost:8080/api/product/create");
+
+        xhr.setRequestHeader("Accept", "application/json");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+
+        xhr.onload = () => {
+            var d = JSON.parse(xhr.responseText)
+            if (xhr.status == 200) {
+                location.replace("./index.html")
+            } else {
+                alert(d.msg)
+            }
+        }
+
+        xhr.send(JSON.stringify(data))
+    })
+</script>
+
+</html>

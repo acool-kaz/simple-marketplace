@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+
+<style>
+    .products {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .oneProduct {
+        margin: 20px;
+        border: 1px solid black;
+    }
+</style>
+
+<body>
+    <div class="header"></div>
+    <div class="profile"></div>
+    <div class="find"></div>
+    <div class="products"></div>
+</body>
+<script>
+    const apiURL = 'http://localhost:8080'
+    var header = document.querySelector('.header')
+    var token = localStorage.getItem("token")
+    getProducts()
+    if (token == null) {
+        header.innerHTML += `
+        <a href="./register.html">Register</a>
+        <a href="./login.html">Login</a>
+        `
+    } else {
+        header.innerHTML += `
+        <a href="#" class="logout">Logout</a>
+        <a href="./createProduct.html">Create Product</a>
+        `
+        getUserProfile()
+        findProducts()
+    }
+    document.querySelector('.logout').addEventListener('click', () => {
+        localStorage.removeItem("token")
+        location.reload()
+    })
+
+    function findProducts() {
+        var find = document.querySelector('.find')
+        var input = document.createElement('input')
+        input.type = "text"
+        var btn = document.createElement('button')
+        btn.innerHTML = "find"
+        find.appendChild(input)
+        find.appendChild(btn)
+        btn.addEventListener('click', () => {
+            sendRequest('POST', `${apiURL}/api/product/find`, { info: input.value }, true)
+                .then(data => {
+                    const products = document.querySelector('.products')
+                    products.innerHTML = ''
+                    if (data == null) {
+                        return
+                    }
+                    data.forEach(el => {
+                        const oneProduct = `
+                        <div class='oneProduct'>
+                            <p>ID: ${el['id']}</p>
+                            <p>USER_ID: ${el['user_id']}</p>
+                            <p>NAME: ${el['name']}</p>
+                            <p>DESCRIPTION: ${el['description']}</p>
+                            <p>TAGS: ${el['tags']}</p>
+                            <p>PRICE: ${el['price']}</p>
+                            <p>CREATE AT: ${el['created_at']}</p>
+                        </div>
+                        `
+                        products.innerHTML += oneProduct
+                    })
+                })
+                .catch(err => alert(err.status + " " + err.msg))
+        })
+    }
+
+    function getProducts() {
+        sendRequest('GET', `${apiURL}/product/all`, null, false)
+            .then(data => {
+                if (data == null) {
+                    return
+                }
+                const products = document.querySelector('.products')
+                data.forEach(el => {
+                    const oneProduct = `
+                    <div class='oneProduct'>
+                        <p>ID: ${el['id']}</p>
+                        <p>USER_ID: ${el['user_id']}</p>
+                        <p>NAME: ${el['name']}</p>
+                        <p>DESCRIPTION: ${el['description']}</p>
+                        <p>TAGS: ${el['tags']}</p>
+                        <p>PRICE: ${el['price']}</p>
+                        <p>CREATE AT: ${el['created_at']}</p>
+                    </div>
+                    `
+                    products.innerHTML += oneProduct
+                })
+            })
+            .catch(err => alert(err.status + " " + err.msg))
+    }
+
+    function getUserProfile() {
+        sendRequest('GET', `${apiURL}/api/profile`, null, true)
+            .then(data => {
+                var table = document.createElement('table')
+                table.style.border = "1px solid black"
+                for (const key in data) {
+                    var tr = document.createElement('tr')
+                    var td = document.createElement('td')
+                    td.innerText = key
+                    td.style.border = "1px solid black"
+                    td.style.padding = "5px"
+                    tr.appendChild(td)
+                    var td = document.createElement('td')
+                    td.innerText = data[key]
+                    td.style.border = "1px solid black"
+                    td.style.padding = "5px"
+                    tr.appendChild(td)
+                    table.appendChild(tr)
+                }
+                document.querySelector('.profile').appendChild(table)
+            })
+            .catch(err => alert(err.status + " " + err.msg))
+    }
+
+    function sendRequest(method, url, body = null, login) {
+        return new Promise((resolve, reject) => {
+            let xhr = new XMLHttpRequest();
+            xhr.open(method, url);
+
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.setRequestHeader("Content-Type", "application/json");
+            if (login) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+            }
+            xhr.responseType = 'json'
+
+            xhr.onload = () => {
+                if (xhr.status == 200) {
+                    resolve(xhr.response)
+                } else {
+                    reject(xhr.response)
+                }
+            }
+
+            xhr.send(JSON.stringify(body))
+        })
+    }
+</script>
+
+</html>
