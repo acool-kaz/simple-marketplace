@@ -9,28 +9,23 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-type Auth interface {
-	SignUp(user models.User) error
+type Admin interface {
 	SignIn(username, password string) (string, error)
 	ParseToken(accessToken string) (int, error)
 }
 
-type AuthService struct {
-	repos repository.Auth
+type AdminService struct {
+	repos repository.Admin
 }
 
-func newAuthService(r repository.Auth) *AuthService {
-	return &AuthService{
-		repos: r,
+func newAdminService(repos repository.Admin) *AdminService {
+	return &AdminService{
+		repos: repos,
 	}
 }
 
-func (s *AuthService) SignUp(user models.User) error {
-	return s.repos.CreateUser(user)
-}
-
-func (s *AuthService) SignIn(username, password string) (string, error) {
-	user, err := s.repos.GetUser(username, password)
+func (s *AdminService) SignIn(username, password string) (string, error) {
+	admin, err := s.repos.GetAdmin(username, password)
 	if err != nil {
 		return "", err
 	}
@@ -39,12 +34,12 @@ func (s *AuthService) SignIn(username, password string) (string, error) {
 			ExpiresAt: time.Now().Add(12 * time.Hour).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
-		user.Id,
+		admin.Id,
 	})
 	return token.SignedString([]byte(models.Key))
 }
 
-func (s *AuthService) ParseToken(accessToken string) (int, error) {
+func (s *AdminService) ParseToken(accessToken string) (int, error) {
 	token, err := jwt.ParseWithClaims(accessToken, &models.TokenClaims{}, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signing method")

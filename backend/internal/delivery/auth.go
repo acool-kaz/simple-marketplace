@@ -28,15 +28,10 @@ func (h *Handler) signUp(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-type signInInput struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
 func (h *Handler) signIn(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	var input signInInput
+	var input models.SignInInput
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		h.errPage(w, http.StatusBadRequest, err.Error())
 		return

@@ -9,6 +9,7 @@ import (
 
 const (
 	users_table    = "users"
+	admins_table   = "admins"
 	products_table = "products"
 )
 

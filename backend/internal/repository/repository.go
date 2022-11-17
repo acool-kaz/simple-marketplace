@@ -6,6 +6,7 @@ type Repository struct {
 	Auth
 	User
 	Product
+	Admin
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
@@ -13,5 +14,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 		Auth:    newAuthRepos(db),
 		User:    newUserRepos(db),
 		Product: newProductRepos(db),
+		Admin:   newAdminRepository(db),
 	}
 }

@@ -12,3 +12,8 @@ type User struct {
 	CardMY   pq.StringArray `json:"card_m_y" db:"card_m_y"`
 	Password string         `json:"password" db:"password"`
 }
+
+type SignInInput struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}

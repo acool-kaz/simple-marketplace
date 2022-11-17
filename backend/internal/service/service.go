@@ -6,6 +6,7 @@ type Service struct {
 	Auth
 	User
 	Product
+	Admin
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -13,5 +14,6 @@ func NewService(repos *repository.Repository) *Service {
 		Auth:    newAuthService(repos.Auth),
 		User:    newUserService(repos.User),
 		Product: newProductService(repos.Product),
+		Admin:   newAdminService(repos.Admin),
 	}
 }

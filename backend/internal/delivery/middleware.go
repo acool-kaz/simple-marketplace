@@ -52,3 +52,27 @@ func (h *Handler) userIdentity(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
+
+const adminCtx = "userId"
+
+func (h *Handler) adminIdentity(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		header, ok := r.Header["Authorization"]
+		if !ok {
+			h.errPage(w, http.StatusUnauthorized, "empty auth header")
+			return
+		}
+		headerParts := strings.Split(header[0], " ")
+		if len(headerParts) != 2 {
+			h.errPage(w, http.StatusUnauthorized, "invalid auth header")
+			return
+		}
+		adminId, err := h.service.Admin.ParseToken(headerParts[1])
+		if err != nil {
+			h.errPage(w, http.StatusUnauthorized, err.Error())
+			return
+		}
+		h.ctx = context.WithValue(h.ctx, adminCtx, adminId)
+		next.ServeHTTP(w, r)
+	})
+}

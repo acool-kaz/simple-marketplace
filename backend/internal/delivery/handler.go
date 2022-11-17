@@ -24,6 +24,26 @@ func (h *Handler) InitRoutes() *mux.Router {
 	mux.Use(h.corsMiddleware)
 	mux.Use(h.loggingMiddleware)
 
+	admin := mux.PathPrefix("/admin").Subrouter()
+
+	adminAuth := admin.PathPrefix("/auth").Subrouter()
+	adminAuth.HandleFunc("/sign-in", h.adminSignIn).Methods("POST", "OPTIONS")
+
+	adminApi := admin.PathPrefix("/api").Subrouter()
+	adminApi.Use(h.adminIdentity)
+
+	adminUser := adminApi.PathPrefix("/users").Subrouter()
+	adminUser.HandleFunc("", h.adminGetUsers).Methods("GET", "OPTIONS")
+	adminUser.HandleFunc("", h.adminCreateUser).Methods("POST", "OPTIONS")
+	adminUser.HandleFunc("/{id}", h.adminDeleteUser).Methods("DELETE", "OPTIONS")
+	adminUser.HandleFunc("/{id}", h.adminUpdateUser).Methods("PUT", "OPTIONS")
+
+	adminProducts := adminApi.PathPrefix("/products").Subrouter()
+	adminProducts.HandleFunc("", h.adminGetProducts).Methods("GET", "OPTIONS")
+	adminProducts.HandleFunc("", h.adminCreateProducts).Methods("POST", "OPTIONS")
+	adminProducts.HandleFunc("/{id}", h.adminDeleteProducts).Methods("DELETE", "OPTIONS")
+	adminProducts.HandleFunc("/{id}", h.adminUpdateProducts).Methods("PUT", "OPTIONS")
+
 	auth := mux.PathPrefix("/auth").Subrouter()
 	auth.HandleFunc("/sign-up", h.signUp).Methods("POST", "OPTIONS")
 	auth.HandleFunc("/sign-in", h.signIn).Methods("POST", "OPTIONS")
