@@ -24,6 +24,7 @@ func (h *Handler) InitRoutes() *mux.Router {
 	mux.Use(h.corsMiddleware)
 	mux.Use(h.loggingMiddleware)
 
+	// Admin
 	admin := mux.PathPrefix("/admin").Subrouter()
 
 	adminAuth := admin.PathPrefix("/auth").Subrouter()
@@ -44,6 +45,7 @@ func (h *Handler) InitRoutes() *mux.Router {
 	adminProducts.HandleFunc("/{id}", h.adminDeleteProducts).Methods("DELETE", "OPTIONS")
 	adminProducts.HandleFunc("/{id}", h.adminUpdateProducts).Methods("PUT", "OPTIONS")
 
+	// User
 	auth := mux.PathPrefix("/auth").Subrouter()
 	auth.HandleFunc("/sign-up", h.signUp).Methods("POST", "OPTIONS")
 	auth.HandleFunc("/sign-in", h.signIn).Methods("POST", "OPTIONS")
@@ -52,12 +54,13 @@ func (h *Handler) InitRoutes() *mux.Router {
 
 	api := mux.PathPrefix("/api").Subrouter()
 	api.Use(h.userIdentity)
-	api.HandleFunc("/profile", h.profilePage).Methods("GET", "OPTIONS")
-	api.HandleFunc("/find", h.findUsers).Methods("POST", "OPTIONS")
+
+	user := api.PathPrefix("/user").Subrouter()
+	user.HandleFunc("", h.profilePage).Methods("GET", "OPTIONS")
 
 	product := api.PathPrefix("/product").Subrouter()
-	product.HandleFunc("/create", h.productCreate).Methods("POST", "OPTIONS")
-	product.HandleFunc("/find", h.productFind).Methods("POST", "OPTIONS")
+	product.HandleFunc("", h.productCreate).Methods("POST", "OPTIONS")
+	product.HandleFunc("", h.productFind).Methods("GET", "OPTIONS")
 	product.HandleFunc("/{id}", h.productUpdate).Methods("PUT", "OPTIONS")
 	product.HandleFunc("/{id}", h.productDelete).Methods("DELETE", "OPTIONS")
 

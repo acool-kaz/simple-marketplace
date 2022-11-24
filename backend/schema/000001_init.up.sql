@@ -41,4 +41,5 @@ CREATE TABLE top_secret
 INSERT INTO top_secret (info) VALUES
 ('поздравляю ты нашел секретную информацию'),
 ('https://jut.su/oneepiece/episode-362.html'),
-('https://www.youtube.com/watch?v=xm3YgoEiEDc');
+('https://www.youtube.com/watch?v=xm3YgoEiEDc'),
+('http://127.0.0.1:5500/frontend/admin.html');

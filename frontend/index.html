@@ -58,7 +58,7 @@
         find.appendChild(input)
         find.appendChild(btn)
         btn.addEventListener('click', () => {
-            sendRequest('POST', `${apiURL}/api/product/find`, { info: input.value }, true)
+            sendRequest('GET', `${apiURL}/api/product?info=${input.value}`, null, true)
                 .then(data => {
                     const products = document.querySelector('.products')
                     products.innerHTML = ''

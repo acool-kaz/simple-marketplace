@@ -23,18 +23,11 @@ func (h *Handler) productGetAll(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-type findInfo struct {
-	Info string `json:"info"`
-}
-
 func (h *Handler) productFind(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	var info findInfo
-	if err := json.NewDecoder(r.Body).Decode(&info); err != nil {
-		h.errPage(w, http.StatusBadRequest, err.Error())
-		return
-	}
-	products, err := h.service.Product.Find(info.Info)
+	query := r.URL.Query()["info"][0]
+
+	products, err := h.service.Product.Find(query)
 	if err != nil {
 		if !errors.Is(err, sql.ErrNoRows) {
 			h.errPage(w, http.StatusInternalServerError, err.Error())
