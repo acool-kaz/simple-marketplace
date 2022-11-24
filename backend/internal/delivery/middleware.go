@@ -29,7 +29,9 @@ func (h *Handler) corsMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-const userCtx = "userId"
+type userCtx string
+
+const ctx userCtx = "userId"
 
 func (h *Handler) userIdentity(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -48,12 +50,10 @@ func (h *Handler) userIdentity(next http.Handler) http.Handler {
 			h.errPage(w, http.StatusUnauthorized, err.Error())
 			return
 		}
-		h.ctx = context.WithValue(h.ctx, userCtx, userId)
+		h.ctx = context.WithValue(h.ctx, ctx, userId)
 		next.ServeHTTP(w, r)
 	})
 }
-
-const adminCtx = "userId"
 
 func (h *Handler) adminIdentity(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -72,7 +72,7 @@ func (h *Handler) adminIdentity(next http.Handler) http.Handler {
 			h.errPage(w, http.StatusUnauthorized, err.Error())
 			return
 		}
-		h.ctx = context.WithValue(h.ctx, adminCtx, adminId)
+		h.ctx = context.WithValue(h.ctx, ctx, adminId)
 		next.ServeHTTP(w, r)
 	})
 }

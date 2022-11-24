@@ -42,7 +42,7 @@ func (h *Handler) productFind(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) productCreate(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	userId := h.ctx.Value(userCtx).(int)
+	userId := h.ctx.Value(ctx).(int)
 	var product models.Product
 	if err := json.NewDecoder(r.Body).Decode(&product); err != nil {
 		h.errPage(w, http.StatusBadRequest, err.Error())
