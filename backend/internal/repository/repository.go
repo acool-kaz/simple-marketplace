@@ -1,19 +1,32 @@
 package repository
 
-import "github.com/jmoiron/sqlx"
+import (
+	"context"
+	"database/sql"
+	"log"
 
-type Repository struct {
-	Auth
-	User
-	Product
-	Admin
+	"github.com/acool-kaz/simple-marketplace/internal/models"
+)
+
+const (
+	userTable = "users"
+)
+
+type User interface {
+	Create(ctx context.Context, user models.UserSignUp) (uint, error)
+	GetAll(ctx context.Context) ([]models.User, error)
+	GetOneBy(ctx context.Context) (models.User, error)
+	Update(ctx context.Context, userId uint, user models.UserUpdate) (models.User, error)
+	Delete(ctx context.Context, userId uint) error
 }
 
-func NewRepository(db *sqlx.DB) *Repository {
+type Repository struct {
+	User User
+}
+
+func InitRepository(db *sql.DB) *Repository {
+	log.Println("init repository")
 	return &Repository{
-		Auth:    newAuthRepos(db),
-		User:    newUserRepos(db),
-		Product: newProductRepos(db),
-		Admin:   newAdminRepository(db),
+		User: newUserRepos(db),
 	}
 }

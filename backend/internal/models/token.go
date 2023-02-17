@@ -1,10 +1,17 @@
 package models
 
-import "github.com/golang-jwt/jwt"
+import (
+	"time"
 
-const Key = "kjHASkdHAIRsadkjahfhuH12390"
+	"github.com/golang-jwt/jwt"
+)
 
-type TokenClaims struct {
+type Token struct {
 	jwt.StandardClaims
-	UserId int `json:"user_id"`
+	Id uint
 }
+
+const (
+	AccessTokenTime  = 30 * 24 * time.Hour
+	RefreshTokenTime = 30 * 24 * time.Hour
+)

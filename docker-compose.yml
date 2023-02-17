@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  web:
+    container_name: marketplace-api
+    build:
+      context: ./backend/
+      dockerfile: Dockerfile
+    environment:
+      - HTTP-PORT=8080
+      - HTTP-HOST=0.0.0.0
+      - HTTP-READTIMEOUT=30
+      - HTTP-WRITETIMEOUT=30
+      - POSTGRES-HOST=db
+      - POSTGRES-PORT=5432
+      - POSTGRES-USER=postgres
+      - POSTGRES-DBNAME=postgres
+      - POSTGRES-PASSWORD=qwerty
+      - POSTGRES-SSLMODE=disable
+      - JWT_SALT=asdijdasd102ke1p1x92i0123s13
+    ports:
+      - "8080:8080"
+    links:
+      - db
+    depends_on:
+      db:
+        condition: service_healthy
+  
+  db:
+    image: postgres:latest
+    container_name: marketplace-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=qwerty
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U postgres -d postgres
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  mfgigrate:
+    image: migrate/migrate
+    container_name: marketplace-migrate
+    volumes:
+      - ./backend/migrations/:/migrations
+    command: ["-path", "./migrations", "-database",  "postgres://postgres:qwerty@db:5432/postgres?sslmode=disable", "up"]
+    links:
+      - db
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres-db:
