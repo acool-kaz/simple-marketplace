@@ -1,9 +1,10 @@
-package http
+package user_routes
 
 import (
 	"context"
 	"strings"
 
+	delivery_http "github.com/acool-kaz/simple-marketplace/internal/delivery/http"
 	"github.com/acool-kaz/simple-marketplace/internal/models"
 	"github.com/gin-gonic/gin"
 )
@@ -16,17 +17,17 @@ type authCtx string
 
 const curUserId authCtx = "cur_user_id"
 
-func (h *Handler) authMiddleware(ctx *gin.Context) {
+func (h *UserHandler) authMiddleware(ctx *gin.Context) {
 	token := ctx.GetHeader(authorizationHeader)
 
 	if token == "" {
-		h.errorHandler(ctx, models.ErrInvalidAuthToken)
+		delivery_http.ErrorHandler(ctx, models.ErrInvalidAuthToken)
 		return
 	}
 
 	headerParts := strings.Split(token, " ")
 	if len(headerParts) != 2 || headerParts[0] != "Bearer" {
-		h.errorHandler(ctx, models.ErrInvalidAuthToken)
+		delivery_http.ErrorHandler(ctx, models.ErrInvalidAuthToken)
 		return
 	}
 
@@ -34,7 +35,7 @@ func (h *Handler) authMiddleware(ctx *gin.Context) {
 
 	userId, err := h.services.Auth.ParseToken(ctx.Request.Context(), accessToken)
 	if err != nil {
-		h.errorHandler(ctx, err)
+		delivery_http.ErrorHandler(ctx, err)
 		return
 	}
 

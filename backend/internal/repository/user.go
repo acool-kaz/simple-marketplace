@@ -22,12 +22,12 @@ func newUserRepos(db *sql.DB) *UserRepos {
 func (ur *UserRepos) Create(ctx context.Context, user models.UserSignUp) (uint, error) {
 	query := fmt.Sprintf(`
 		INSERT INTO %s 
-			(first_name, second_name, email, username, password) 
+			(first_name, second_name, email, phone_number, username, password) 
 		VALUES 
-			('%s', '%s', '%s', '%s', '%s') 
+			('%s', '%s', '%s', '%s', '%s', '%s') 
 		RETURNING id;`,
 		userTable,
-		user.FirstName, user.SecondName, user.Email, user.Username, user.Password,
+		user.FirstName, user.SecondName, user.Email, user.PhoneNumber, user.Username, user.Password,
 	)
 
 	var id uint
@@ -58,7 +58,7 @@ func (ur *UserRepos) GetAll(ctx context.Context) ([]models.User, error) {
 	for rows.Next() {
 		var user models.User
 
-		err = rows.Scan(&user.Id, &user.FirstName, &user.SecondName, &user.Email, &user.Username, &user.Password)
+		err = rows.Scan(&user.Id, &user.FirstName, &user.SecondName, &user.Email, &user.PhoneNumber, &user.Username, &user.Password)
 		if err != nil {
 			return nil, fmt.Errorf("user repos: get all: %w", err)
 		}
@@ -72,7 +72,7 @@ func (ur *UserRepos) GetAll(ctx context.Context) ([]models.User, error) {
 func (ur *UserRepos) GetOneBy(ctx context.Context) (models.User, error) {
 	argsStr := []string{}
 
-	ctxKeys := []interface{}{models.UserId, models.UserFirstName, models.UserSecondName, models.UserEmail, models.UserUsername, models.UserPassword}
+	ctxKeys := []interface{}{models.UserId, models.UserFirstName, models.UserSecondName, models.UserEmail, models.UserPhoneNumber, models.UserUsername, models.UserPassword}
 
 	for _, ctxKey := range ctxKeys {
 		ctxValue := ctx.Value(ctxKey)
@@ -100,7 +100,7 @@ func (ur *UserRepos) GetOneBy(ctx context.Context) (models.User, error) {
 
 	var user models.User
 
-	err := ur.db.QueryRowContext(ctx, query).Scan(&user.Id, &user.FirstName, &user.SecondName, &user.Email, &user.Username, &user.Password)
+	err := ur.db.QueryRowContext(ctx, query).Scan(&user.Id, &user.FirstName, &user.SecondName, &user.Email, &user.PhoneNumber, &user.Username, &user.Password)
 	if err != nil {
 		return models.User{}, fmt.Errorf("user repos: get one by: %w", err)
 	}
@@ -108,10 +108,72 @@ func (ur *UserRepos) GetOneBy(ctx context.Context) (models.User, error) {
 	return user, nil
 }
 
-func (ur *UserRepos) Update(ctx context.Context, userId uint, user models.UserUpdate) (models.User, error) {
-	panic("not implemented") // TODO: Implement
+func (ur *UserRepos) Update(ctx context.Context, userId uint, user models.UserUpdate) error {
+	argsStr := []string{}
+
+	if user.FirstName != "" {
+		argsStr = append(argsStr, fmt.Sprintf("first_name = '%s'", user.FirstName))
+	}
+
+	if user.SecondName != "" {
+		argsStr = append(argsStr, fmt.Sprintf("second_name = '%s'", user.SecondName))
+	}
+
+	if user.Email != "" {
+		argsStr = append(argsStr, fmt.Sprintf("email = '%s'", user.Email))
+	}
+
+	if user.PhoneNumber != "" {
+		argsStr = append(argsStr, fmt.Sprintf("phone_number = '%s'", user.PhoneNumber))
+	}
+
+	if user.Username != "" {
+		argsStr = append(argsStr, fmt.Sprintf("username = '%s'", user.Username))
+	}
+
+	if user.Password != "" {
+		argsStr = append(argsStr, fmt.Sprintf("password = '%s'", user.Password))
+	}
+
+	updateQuery := ""
+
+	if len(argsStr) != 0 {
+		updateQuery = strings.Join(argsStr, ", ")
+	}
+
+	query := fmt.Sprintf(`
+		UPDATE
+			%s
+		SET
+			%s
+		WHERE id = '%d'
+		`,
+		userTable,
+		updateQuery,
+		userId,
+	)
+
+	_, err := ur.db.ExecContext(ctx, query)
+	if err != nil {
+		return fmt.Errorf("user repos: update: %w", err)
+	}
+
+	return nil
 }
 
 func (ur *UserRepos) Delete(ctx context.Context, userId uint) error {
-	panic("not implemented") // TODO: Implement
+	query := fmt.Sprintf(`
+		DELETE
+			%s
+		WHERE id = '%d'`,
+		userTable,
+		userId,
+	)
+
+	_, err := ur.db.ExecContext(ctx, query)
+	if err != nil {
+		return fmt.Errorf("user repos: delete: %w", err)
+	}
+
+	return nil
 }

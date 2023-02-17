@@ -12,7 +12,8 @@ type Config struct {
 		LogLevel string `env:"LOG-LEVEL" env-default:"trace"`
 	}
 	HttpConfig struct {
-		Port         string `env:"HTTP-PORT" env-required:"true"`
+		UserPort     string `env:"HTTP-USER-PORT" env-required:"true"`
+		AdminPort    string `env:"HTTP-ADMIN-PORT" env-required:"true"`
 		Host         string `env:"HTTP-HOST" env-required:"true"`
 		ReadTimeout  int    `env:"HTTP-READTIMEOUT" env-required:"true"`
 		WriteTimeout int    `env:"HTTP-WRITETIMEOUT" env-required:"true"`

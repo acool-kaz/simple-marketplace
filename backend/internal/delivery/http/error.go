@@ -10,7 +10,7 @@ import (
 	"github.com/goccy/go-json"
 )
 
-func (h *Handler) errorHandler(ctx *gin.Context, err error) {
+func ErrorHandler(ctx *gin.Context, err error) {
 	status := http.StatusInternalServerError
 
 	switch {
