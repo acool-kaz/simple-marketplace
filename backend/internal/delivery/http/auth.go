@@ -1,24 +1,23 @@
-package user_routes
+package http
 
 import (
 	"net/http"
 
-	delivery_http "github.com/acool-kaz/simple-marketplace/internal/delivery/http"
 	"github.com/acool-kaz/simple-marketplace/internal/models"
 	"github.com/gin-gonic/gin"
 )
 
-func (h *UserHandler) signUpHandler(ctx *gin.Context) {
+func (h *Handler) signUpHandler(ctx *gin.Context) {
 	var user models.UserSignUp
 	err := ctx.BindJSON(&user)
 	if err != nil {
-		delivery_http.ErrorHandler(ctx, err)
+		errorHandler(ctx, err)
 		return
 	}
 
 	id, err := h.services.Auth.SignUp(ctx.Request.Context(), user)
 	if err != nil {
-		delivery_http.ErrorHandler(ctx, err)
+		errorHandler(ctx, err)
 		return
 	}
 
@@ -27,17 +26,17 @@ func (h *UserHandler) signUpHandler(ctx *gin.Context) {
 	})
 }
 
-func (h *UserHandler) signInHandler(ctx *gin.Context) {
+func (h *Handler) signInHandler(ctx *gin.Context) {
 	var user models.UserSignIn
 	err := ctx.BindJSON(&user)
 	if err != nil {
-		delivery_http.ErrorHandler(ctx, err)
+		errorHandler(ctx, err)
 		return
 	}
 
 	access, refresh, err := h.services.Auth.SignIn(ctx.Request.Context(), user)
 	if err != nil {
-		delivery_http.ErrorHandler(ctx, err)
+		errorHandler(ctx, err)
 		return
 	}
 

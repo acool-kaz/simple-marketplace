@@ -11,8 +11,7 @@ import (
 	"time"
 
 	"github.com/acool-kaz/simple-marketplace/internal/config"
-	admin_routes "github.com/acool-kaz/simple-marketplace/internal/delivery/http/admin"
-	user_routes "github.com/acool-kaz/simple-marketplace/internal/delivery/http/user"
+	http_handler "github.com/acool-kaz/simple-marketplace/internal/delivery/http"
 	"github.com/acool-kaz/simple-marketplace/internal/repository"
 	"github.com/acool-kaz/simple-marketplace/internal/service"
 	"github.com/acool-kaz/simple-marketplace/pkg/postgres"
@@ -23,9 +22,8 @@ type app struct {
 
 	db *sql.DB
 
-	httpServer       *http.Server
-	httpUserHandler  *user_routes.UserHandler
-	httpAdminHandler *admin_routes.AdminHandler
+	httpServer  *http.Server
+	httpHandler *http_handler.Handler
 }
 
 func InitApp(cfg *config.Config) (*app, error) {
@@ -48,29 +46,19 @@ func InitApp(cfg *config.Config) (*app, error) {
 	repository := repository.InitRepository(db)
 	service := service.InitService(repository)
 
-	httpUserHandler := user_routes.InitUserHandler(service)
-	httpAdminHandler := admin_routes.InitAdminHandler(service)
+	httpHandler := http_handler.InitHandler(service)
 
 	return &app{
-		cfg:              cfg,
-		db:               db,
-		httpUserHandler:  httpUserHandler,
-		httpAdminHandler: httpAdminHandler,
+		cfg:         cfg,
+		db:          db,
+		httpHandler: httpHandler,
 	}, nil
 }
 
 func (a *app) RunApp() {
 	log.Println("run app")
 	go func() {
-		err := a.startUserHTTP()
-		if err != nil {
-			log.Println(err)
-			return
-		}
-	}()
-
-	go func() {
-		err := a.startAdminHTTP()
+		err := a.startHTTP()
 		if err != nil {
 			log.Println(err)
 			return
@@ -99,27 +87,13 @@ func (a *app) RunApp() {
 	}
 }
 
-func (a *app) startUserHTTP() error {
-	log.Println("start user http")
-	router := a.httpUserHandler.InitUserRoutes()
+func (a *app) startHTTP() error {
+	log.Println("start http")
+	router := a.httpHandler.InitRoutes()
 
 	a.httpServer = &http.Server{
 		Handler:      router,
-		Addr:         ":" + a.cfg.HttpConfig.UserPort,
-		ReadTimeout:  time.Second * time.Duration(a.cfg.HttpConfig.ReadTimeout),
-		WriteTimeout: time.Second * time.Duration(a.cfg.HttpConfig.WriteTimeout),
-	}
-
-	return a.httpServer.ListenAndServe()
-}
-
-func (a *app) startAdminHTTP() error {
-	log.Println("start admin http")
-	router := a.httpUserHandler.InitUserRoutes()
-
-	a.httpServer = &http.Server{
-		Handler:      router,
-		Addr:         ":" + a.cfg.HttpConfig.AdminPort,
+		Addr:         ":" + a.cfg.HttpConfig.Port,
 		ReadTimeout:  time.Second * time.Duration(a.cfg.HttpConfig.ReadTimeout),
 		WriteTimeout: time.Second * time.Duration(a.cfg.HttpConfig.WriteTimeout),
 	}

@@ -7,8 +7,7 @@ services:
       context: ./backend/
       dockerfile: Dockerfile
     environment:
-      - HTTP-USER-PORT=8080
-      - HTTP-ADMIN-PORT=8081
+      - HTTP-PORT=8080
       - HTTP-HOST=0.0.0.0
       - HTTP-READTIMEOUT=30
       - HTTP-WRITETIMEOUT=30
