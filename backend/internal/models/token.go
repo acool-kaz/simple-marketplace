@@ -8,7 +8,8 @@ import (
 
 type Token struct {
 	jwt.StandardClaims
-	Id uint
+	Id   uint
+	Role string
 }
 
 const (

@@ -2,6 +2,7 @@ package models
 
 type User struct {
 	Id          uint   `json:"id,omitempty"`
+	Role        string `json:"role,omitempty"`
 	FirstName   string `json:"first_name,omitempty"`
 	SecondName  string `json:"second_name,omitempty"`
 	PhoneNumber string `json:"phone_number,omitempty"`
@@ -38,6 +39,7 @@ type UserCtx string
 
 const (
 	UserId          UserCtx = "user_id"
+	UserRole        UserCtx = "user_role"
 	UserFirstName   UserCtx = "user_first_name"
 	UserSecondName  UserCtx = "user_second_name"
 	UserEmail       UserCtx = "user_email"

@@ -69,12 +69,12 @@ func (as *AuthService) SignIn(ctx context.Context, user models.UserSignIn) (stri
 		return "", "", fmt.Errorf("auth service: sign in: %w", models.ErrUserNotFound)
 	}
 
-	access, err := newAccessToken(curUser.Id)
+	access, err := newAccessToken(curUser.Id, curUser.Role)
 	if err != nil {
 		return "", "", fmt.Errorf("auth service: sign in: %w", err)
 	}
 
-	refresh, err := newRefreshToken(curUser.Id)
+	refresh, err := newRefreshToken(curUser.Id, curUser.Role)
 	if err != nil {
 		return "", "", fmt.Errorf("auth service: sign in: %w", err)
 	}
@@ -82,7 +82,7 @@ func (as *AuthService) SignIn(ctx context.Context, user models.UserSignIn) (stri
 	return access, refresh, nil
 }
 
-func (as *AuthService) ParseToken(ctx context.Context, accessToken string) (uint, error) {
+func (as *AuthService) ParseToken(ctx context.Context, accessToken string) (*models.Token, error) {
 	token, err := jwt.ParseWithClaims(accessToken, &models.Token{}, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("auth service: parse token: invalid signing method")
@@ -90,36 +90,38 @@ func (as *AuthService) ParseToken(ctx context.Context, accessToken string) (uint
 		return []byte(os.Getenv("JWT_SALT")), nil
 	})
 	if err != nil {
-		return 0, fmt.Errorf("auth service: parse token: %w", err)
+		return nil, fmt.Errorf("auth service: parse token: %w", err)
 	}
 
 	claims, ok := token.Claims.(*models.Token)
 	if !ok {
-		return 0, errors.New("auth service: parse token: token claims are not of type *tokenClaims")
+		return nil, errors.New("auth service: parse token: token claims are not of type *tokenClaims")
 	}
 
-	return claims.Id, nil
+	return claims, nil
 }
 
-func newAccessToken(userId uint) (string, error) {
+func newAccessToken(userId uint, role string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &models.Token{
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(models.AccessTokenTime).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
-		Id: userId,
+		Id:   userId,
+		Role: role,
 	})
 
 	return token.SignedString([]byte(os.Getenv("JWT_SALT")))
 }
 
-func newRefreshToken(userId uint) (string, error) {
+func newRefreshToken(userId uint, role string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &models.Token{
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(models.RefreshTokenTime).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
-		Id: userId,
+		Id:   userId,
+		Role: role,
 	})
 
 	return token.SignedString([]byte(os.Getenv("JWT_SALT")))

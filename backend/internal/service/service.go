@@ -19,7 +19,7 @@ type User interface {
 type Auth interface {
 	SignUp(ctx context.Context, user models.UserSignUp) (uint, error)
 	SignIn(ctx context.Context, user models.UserSignIn) (string, string, error)
-	ParseToken(ctx context.Context, accessToken string) (uint, error)
+	ParseToken(ctx context.Context, accessToken string) (*models.Token, error)
 }
 
 type Service struct {

@@ -58,7 +58,7 @@ func (ur *UserRepos) GetAll(ctx context.Context) ([]models.User, error) {
 	for rows.Next() {
 		var user models.User
 
-		err = rows.Scan(&user.Id, &user.FirstName, &user.SecondName, &user.Email, &user.PhoneNumber, &user.Username, &user.Password)
+		err = rows.Scan(&user.Id, &user.Role, &user.FirstName, &user.SecondName, &user.Email, &user.PhoneNumber, &user.Username, &user.Password)
 		if err != nil {
 			return nil, fmt.Errorf("user repos: get all: %w", err)
 		}
@@ -72,7 +72,7 @@ func (ur *UserRepos) GetAll(ctx context.Context) ([]models.User, error) {
 func (ur *UserRepos) GetOneBy(ctx context.Context) (models.User, error) {
 	argsStr := []string{}
 
-	ctxKeys := []interface{}{models.UserId, models.UserFirstName, models.UserSecondName, models.UserEmail, models.UserPhoneNumber, models.UserUsername, models.UserPassword}
+	ctxKeys := []interface{}{models.UserId, models.UserRole, models.UserFirstName, models.UserSecondName, models.UserEmail, models.UserPhoneNumber, models.UserUsername, models.UserPassword}
 
 	for _, ctxKey := range ctxKeys {
 		ctxValue := ctx.Value(ctxKey)
@@ -100,7 +100,7 @@ func (ur *UserRepos) GetOneBy(ctx context.Context) (models.User, error) {
 
 	var user models.User
 
-	err := ur.db.QueryRowContext(ctx, query).Scan(&user.Id, &user.FirstName, &user.SecondName, &user.Email, &user.PhoneNumber, &user.Username, &user.Password)
+	err := ur.db.QueryRowContext(ctx, query).Scan(&user.Id, &user.Role, &user.FirstName, &user.SecondName, &user.Email, &user.PhoneNumber, &user.Username, &user.Password)
 	if err != nil {
 		return models.User{}, fmt.Errorf("user repos: get one by: %w", err)
 	}

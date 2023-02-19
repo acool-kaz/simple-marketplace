@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/acool-kaz/simple-marketplace/internal/models"
@@ -14,7 +15,7 @@ const (
 
 type authCtx string
 
-const curUserId authCtx = "cur_user_id"
+const curUserClaims authCtx = "cur_user_claims"
 
 func (h *Handler) authMiddleware(ctx *gin.Context) {
 	token := ctx.GetHeader(authorizationHeader)
@@ -32,13 +33,22 @@ func (h *Handler) authMiddleware(ctx *gin.Context) {
 
 	accessToken := headerParts[1]
 
-	userId, err := h.services.Auth.ParseToken(ctx.Request.Context(), accessToken)
+	claims, err := h.services.Auth.ParseToken(ctx.Request.Context(), accessToken)
 	if err != nil {
 		errorHandler(ctx, err)
 		return
 	}
 
-	ctx.Request = ctx.Request.WithContext(context.WithValue(ctx.Request.Context(), curUserId, userId))
+	ctx.Request = ctx.Request.WithContext(context.WithValue(ctx.Request.Context(), curUserClaims, claims))
+
+	ctx.Next()
+}
+
+func (h *Handler) checkIfAdminMiddleware(ctx *gin.Context) {
+	userClaims := ctx.Request.Context().Value(curUserClaims)
+	userClaims = userClaims.(*models.Token)
+
+	fmt.Println(userClaims.Id, userClaims.Role)
 
 	ctx.Next()
 }
