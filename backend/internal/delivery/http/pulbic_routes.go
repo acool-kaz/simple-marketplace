@@ -6,18 +6,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) initUserRoutes(basePath string, router *gin.Engine) {
-	log.Println("init user routes")
+func (h *Handler) initPublicRoutes(basePath string, router *gin.Engine) {
+	log.Println("init public routes")
 
-	userRoutes := router.Group(basePath)
+	publicRoutes := router.Group(basePath)
 	{
-		auth := userRoutes.Group("/auth")
+		auth := publicRoutes.Group("/auth")
 		{
 			auth.POST("/sign-up", h.signUpHandler)
 			auth.POST("/sign-in", h.signInHandler)
 		}
 
-		/* product := userRoutes.Group("/product", h.authMiddleware)
+		/* product := publicRoutes.Group("/product", h.authMiddleware)
 		{
 			product.POST("", h.createProductHandler)
 			product.GET("", h.getAllProductsHandler)

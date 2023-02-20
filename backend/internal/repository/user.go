@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -102,6 +103,9 @@ func (ur *UserRepos) GetOneBy(ctx context.Context) (models.User, error) {
 
 	err := ur.db.QueryRowContext(ctx, query).Scan(&user.Id, &user.Role, &user.FirstName, &user.SecondName, &user.Email, &user.PhoneNumber, &user.Username, &user.Password)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return models.User{}, fmt.Errorf("user repos: get one by: %w", models.ErrUserNotFound)
+		}
 		return models.User{}, fmt.Errorf("user repos: get one by: %w", err)
 	}
 
@@ -163,7 +167,7 @@ func (ur *UserRepos) Update(ctx context.Context, userId uint, user models.UserUp
 
 func (ur *UserRepos) Delete(ctx context.Context, userId uint) error {
 	query := fmt.Sprintf(`
-		DELETE
+		DELETE FROM
 			%s
 		WHERE id = '%d'`,
 		userTable,

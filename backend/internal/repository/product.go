@@ -90,7 +90,7 @@ func (pr *ProductRepos) Update(ctx context.Context, productId uint, product mode
 
 func (pr *ProductRepos) Delete(ctx context.Context, productId uint) error {
 	query := fmt.Sprintf(`
-		DELETE
+		DELETE FROM
 			%s
 		WHERE id = '%d'`,
 		productTable,

@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"fmt"
 	"os"
@@ -25,14 +24,14 @@ func newAuthService(userRepos repository.User) *AuthService {
 
 func (as *AuthService) SignUp(ctx context.Context, user models.UserSignUp) (uint, error) {
 	_, err := as.userRepos.GetOneBy(context.WithValue(ctx, models.UserEmail, user.Email))
-	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+	if err != nil && !errors.Is(err, models.ErrUserNotFound) {
 		return 0, fmt.Errorf("auth service: sign up: %w", err)
 	} else if err == nil {
 		return 0, fmt.Errorf("auth service: sign up: %w", models.ErrUserEmailExist)
 	}
 
 	_, err = as.userRepos.GetOneBy(context.WithValue(ctx, models.UserUsername, user.Username))
-	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+	if err != nil && !errors.Is(err, models.ErrUserNotFound) {
 		return 0, fmt.Errorf("auth service: sign up: %w", err)
 	} else if err == nil {
 		return 0, fmt.Errorf("auth service: sign up: %w", models.ErrUserUsernameExist)
@@ -59,9 +58,6 @@ func (as *AuthService) SignIn(ctx context.Context, user models.UserSignIn) (stri
 	}
 
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return "", "", fmt.Errorf("auth service: sign in: %w", models.ErrUserNotFound)
-		}
 		return "", "", fmt.Errorf("auth service: sign in: %w", err)
 	}
 

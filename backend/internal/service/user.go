@@ -33,9 +33,6 @@ func (us *UserService) GetAll(ctx context.Context) ([]models.User, error) {
 		return nil, fmt.Errorf("user service: get all: %w", err)
 	}
 
-	ctx = context.WithValue(ctx, models.UserId, 1)
-	fmt.Println(us.userRepos.GetOneBy(ctx))
-
 	return users, nil
 }
 
@@ -63,7 +60,12 @@ func (us *UserService) Update(ctx context.Context, userId uint, user models.User
 }
 
 func (us *UserService) Delete(ctx context.Context, userId uint) error {
-	err := us.userRepos.Delete(ctx, userId)
+	_, err := us.GetOneBy(context.WithValue(ctx, models.UserId, userId))
+	if err != nil {
+		return fmt.Errorf("user service: delete: %w", err)
+	}
+
+	err = us.userRepos.Delete(ctx, userId)
 	if err != nil {
 		return fmt.Errorf("user service: delete: %w", err)
 	}

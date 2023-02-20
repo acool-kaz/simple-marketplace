@@ -15,7 +15,7 @@ const (
 
 type authCtx string
 
-const curUserClaims authCtx = "cur_user_claims"
+const curUser authCtx = "cur_user"
 
 func (h *Handler) authMiddleware(ctx *gin.Context) {
 	token := ctx.GetHeader(authorizationHeader)
@@ -39,16 +39,22 @@ func (h *Handler) authMiddleware(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Request = ctx.Request.WithContext(context.WithValue(ctx.Request.Context(), curUserClaims, claims))
+	user, err := h.services.User.GetOneBy(context.WithValue(ctx.Request.Context(), models.UserId, claims.Id))
+	if err != nil {
+		errorHandler(ctx, err)
+		return
+	}
+
+	ctx.Request = ctx.Request.WithContext(context.WithValue(ctx.Request.Context(), curUser, user))
 
 	ctx.Next()
 }
 
 func (h *Handler) checkIfAdminMiddleware(ctx *gin.Context) {
-	userClaims := ctx.Request.Context().Value(curUserClaims)
-	userClaims = userClaims.(*models.Token)
+	user := ctx.Request.Context().Value(curUser)
+	user = user.(models.User)
 
-	fmt.Println(userClaims.Id, userClaims.Role)
+	fmt.Println(user.Role)
 
 	ctx.Next()
 }

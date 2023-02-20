@@ -13,7 +13,7 @@ type Handler struct {
 }
 
 func InitHandler(svc *service.Service) *Handler {
-	log.Println("init user handler")
+	log.Println("init handler")
 	return &Handler{
 		services: svc,
 	}
@@ -24,7 +24,7 @@ func (h *Handler) InitRoutes() http.Handler {
 
 	router := gin.Default()
 
-	h.initUserRoutes("", router)
+	h.initPublicRoutes("", router)
 	h.initAdminRoutes("/admin", router)
 
 	return router
