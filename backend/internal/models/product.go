@@ -19,6 +19,7 @@ type ProductInfo struct {
 }
 
 type ProductCreate struct {
+	UserId      uint    `json:"user_id,omitempty"`
 	Name        string  `json:"name,omitempty" binding:"required"`
 	Description string  `json:"description,omitempty" binding:"required"`
 	Price       float64 `json:"price,omitempty" binding:"required"`

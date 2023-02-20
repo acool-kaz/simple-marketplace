@@ -23,11 +23,11 @@ type User interface {
 }
 
 type Product interface {
-	Create(ctx context.Context, product models.ProductCreate) (uint, error)
+	Create(ctx context.Context, user models.User, product models.ProductCreate) (uint, error)
 	GetAll(ctx context.Context) ([]models.Product, error)
 	GetOneBy(ctx context.Context) (models.Product, error)
-	Update(ctx context.Context, productId uint, product models.ProductUpdate) (models.Product, error)
-	Delete(ctx context.Context, productId uint) error
+	Update(ctx context.Context, user models.User, productId uint, product models.ProductUpdate) (models.Product, error)
+	Delete(ctx context.Context, user models.User, productId uint) error
 }
 
 type Service struct {

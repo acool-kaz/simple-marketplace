@@ -22,9 +22,9 @@ type User interface {
 }
 
 type Product interface {
-	Create(ctx context.Context, userId uint, product models.ProductCreate) (uint, error)
-	GetAll(ctx context.Context) ([]models.ProductInfo, error)
-	GetOneBy(ctx context.Context) (models.ProductInfo, error)
+	Create(ctx context.Context, product models.ProductCreate) (uint, error)
+	GetAll(ctx context.Context) ([]models.Product, error)
+	GetOneBy(ctx context.Context) (models.Product, error)
 	Update(ctx context.Context, productId uint, product models.ProductUpdate) error
 	Delete(ctx context.Context, productId uint) error
 }

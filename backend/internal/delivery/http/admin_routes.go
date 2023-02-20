@@ -30,17 +30,17 @@ func (h *Handler) initAdminRoutes(basePath string, router *gin.Engine) {
 				}
 			}
 
-			// product := api.Group("/product")
-			// {
-			// 	product.POST("", h.adminCreateProductHandler)
-			// 	product.GET("", h.adminGetAllProductsHandler)
-			// 	id := product.Group("/:id")
-			// 	{
-			// 		id.GET("", h.adminGetProductByIdHandler)
-			// 		id.DELETE("", h.adminDeleteProductHandler)
-			// 		id.PATCH("", h.adminUpdateProductHandler)
-			// 	}
-			// }
+			product := api.Group("/product")
+			{
+				product.POST("", h.createProductHandler)
+				product.GET("", h.getAllProductsHandler)
+				id := product.Group("/:id")
+				{
+					id.GET("", h.getProductByIdHandler)
+					id.DELETE("", h.deleteProductHandler)
+					id.PATCH("", h.updateProductHandler)
+				}
+			}
 		}
 	}
 }

@@ -47,3 +47,8 @@ const (
 	UserUsername    UserCtx = "user_username"
 	UserPassword    UserCtx = "user_password"
 )
+
+const (
+	AdminRoleInfo string = "admin"
+	UserRoleInfo  string = "user"
+)

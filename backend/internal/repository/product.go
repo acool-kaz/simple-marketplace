@@ -19,7 +19,7 @@ func newProductRepos(db *sql.DB) *ProductRepos {
 	}
 }
 
-func (pr *ProductRepos) Create(ctx context.Context, userId uint, product models.ProductCreate) (uint, error) {
+func (pr *ProductRepos) Create(ctx context.Context, product models.ProductCreate) (uint, error) {
 	query := fmt.Sprintf(`
 		INSERT INTO %s
 			(user_id, name, description, price)
@@ -27,7 +27,7 @@ func (pr *ProductRepos) Create(ctx context.Context, userId uint, product models.
 			('%d', '%s', '%s', '%f')
 		RETURNING id;`,
 		productTable,
-		userId, product.Name, product.Description, product.Price,
+		product.UserId, product.Name, product.Description, product.Price,
 	)
 
 	var id uint
@@ -39,11 +39,11 @@ func (pr *ProductRepos) Create(ctx context.Context, userId uint, product models.
 	return id, err
 }
 
-func (pr *ProductRepos) GetAll(ctx context.Context) ([]models.ProductInfo, error) {
+func (pr *ProductRepos) GetAll(ctx context.Context) ([]models.Product, error) {
 	panic("not implemented") // TODO: Implement
 }
 
-func (pr *ProductRepos) GetOneBy(ctx context.Context) (models.ProductInfo, error) {
+func (pr *ProductRepos) GetOneBy(ctx context.Context) (models.Product, error) {
 	panic("not implemented") // TODO: Implement
 }
 

@@ -2,7 +2,6 @@ package http
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/acool-kaz/simple-marketplace/internal/models"
@@ -50,11 +49,18 @@ func (h *Handler) authMiddleware(ctx *gin.Context) {
 	ctx.Next()
 }
 
-func (h *Handler) checkIfAdminMiddleware(ctx *gin.Context) {
+func (h *Handler) getUserFromCtx(ctx *gin.Context) models.User {
 	user := ctx.Request.Context().Value(curUser)
-	user = user.(models.User)
+	return user.(models.User)
+}
 
-	fmt.Println(user.Role)
+func (h *Handler) checkIfAdminMiddleware(ctx *gin.Context) {
+	user := h.getUserFromCtx(ctx)
+
+	if user.Role != "admin" {
+		errorHandler(ctx, models.ErrNotAdmin)
+		return
+	}
 
 	ctx.Next()
 }

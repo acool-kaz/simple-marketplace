@@ -17,7 +17,7 @@ func (h *Handler) initPublicRoutes(basePath string, router *gin.Engine) {
 			auth.POST("/sign-in", h.signInHandler)
 		}
 
-		/* product := publicRoutes.Group("/product", h.authMiddleware)
+		product := publicRoutes.Group("/product", h.authMiddleware)
 		{
 			product.POST("", h.createProductHandler)
 			product.GET("", h.getAllProductsHandler)
@@ -27,6 +27,6 @@ func (h *Handler) initPublicRoutes(basePath string, router *gin.Engine) {
 				id.DELETE("", h.deleteProductHandler)
 				id.PATCH("", h.updateProductHandler)
 			}
-		} */
+		}
 	}
 }
