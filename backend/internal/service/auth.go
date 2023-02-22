@@ -55,6 +55,8 @@ func (as *AuthService) SignIn(ctx context.Context, user models.UserSignIn) (stri
 		curUser, err = as.userRepos.GetOneBy(context.WithValue(ctx, models.UserEmail, user.Email))
 	} else if user.Username != "" {
 		curUser, err = as.userRepos.GetOneBy(context.WithValue(ctx, models.UserUsername, user.Username))
+	} else {
+		return "", "", fmt.Errorf("auth service: sing in: %w", models.ErrUserNotFound)
 	}
 
 	if err != nil {

@@ -104,7 +104,7 @@ func (ur *UserRepos) GetOneBy(ctx context.Context) (models.User, error) {
 	err := ur.db.QueryRowContext(ctx, query).Scan(&user.Id, &user.Role, &user.FirstName, &user.SecondName, &user.Email, &user.PhoneNumber, &user.Username, &user.Password)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return models.User{}, fmt.Errorf("user repos: get one by: %w", models.ErrUserNotFound)
+			err = models.ErrUserNotFound
 		}
 		return models.User{}, fmt.Errorf("user repos: get one by: %w", err)
 	}

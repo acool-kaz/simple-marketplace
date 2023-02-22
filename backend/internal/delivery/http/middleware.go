@@ -49,11 +49,6 @@ func (h *Handler) authMiddleware(ctx *gin.Context) {
 	ctx.Next()
 }
 
-func (h *Handler) getUserFromCtx(ctx *gin.Context) models.User {
-	user := ctx.Request.Context().Value(curUser)
-	return user.(models.User)
-}
-
 func (h *Handler) checkIfAdminMiddleware(ctx *gin.Context) {
 	user := h.getUserFromCtx(ctx)
 
@@ -63,4 +58,9 @@ func (h *Handler) checkIfAdminMiddleware(ctx *gin.Context) {
 	}
 
 	ctx.Next()
+}
+
+func (h *Handler) getUserFromCtx(ctx *gin.Context) models.User {
+	user := ctx.Request.Context().Value(curUser)
+	return user.(models.User)
 }

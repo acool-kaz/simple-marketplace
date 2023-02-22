@@ -7,19 +7,26 @@ import (
 
 	"github.com/acool-kaz/simple-marketplace/internal/models"
 	"github.com/gin-gonic/gin"
-	"github.com/goccy/go-json"
 )
 
 func errorHandler(ctx *gin.Context, err error) {
+	ctx.Writer.Header().Set("Content-Type", "application/json")
+
 	status := http.StatusInternalServerError
 
 	switch {
-	case errors.Is(err, models.ErrUserEmailExist):
+	case errors.Is(err, models.ErrInvalidProduct):
+		fallthrough
+	case errors.Is(err, models.ErrUserUsernameExist):
 		fallthrough
 	case errors.Is(err, models.ErrUserEmailExist):
+		status = http.StatusBadRequest
+	case errors.Is(err, models.ErrProductNotFound):
 		fallthrough
 	case errors.Is(err, models.ErrUserNotFound):
-		status = http.StatusBadRequest
+		status = http.StatusNotFound
+	case errors.Is(err, models.ErrNotAdmin):
+		fallthrough
 	case errors.Is(err, models.ErrInvalidAuthToken):
 		status = http.StatusUnauthorized
 	}
@@ -31,6 +38,5 @@ func errorHandler(ctx *gin.Context, err error) {
 
 	ctx.AbortWithStatusJSON(status, info)
 
-	jsonInfo, _ := json.MarshalIndent(info, "", " ")
-	log.Println("\n", string(jsonInfo))
+	log.Printf("\n%+v\n", info)
 }

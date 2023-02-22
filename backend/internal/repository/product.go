@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -40,11 +41,77 @@ func (pr *ProductRepos) Create(ctx context.Context, product models.ProductCreate
 }
 
 func (pr *ProductRepos) GetAll(ctx context.Context) ([]models.Product, error) {
-	panic("not implemented") // TODO: Implement
+	query := fmt.Sprintf(`
+		SELECT
+			*
+		FROM %s;`,
+		productTable,
+	)
+
+	row, err := pr.db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, fmt.Errorf("product repos: get all: %w", err)
+	}
+	defer row.Close()
+
+	var products []models.Product
+
+	for row.Next() {
+		var product models.Product
+
+		err = row.Scan(&product.Id, &product.UserId, &product.Name, &product.Description, &product.Price)
+		if err != nil {
+			return nil, fmt.Errorf("product repos: get all: %w", err)
+		}
+
+		products = append(products, product)
+	}
+
+	return products, nil
 }
 
 func (pr *ProductRepos) GetOneBy(ctx context.Context) (models.Product, error) {
-	panic("not implemented") // TODO: Implement
+	argsStr := []string{}
+
+	ctxKeys := []interface{}{models.ProductId, models.ProductUserId, models.ProductName, models.ProductDescription, models.ProductPrice}
+
+	for _, ctxKey := range ctxKeys {
+		ctxValue := ctx.Value(ctxKey)
+		if ctxValue != nil {
+			ctxKeyString := string(ctxKey.(models.ProductCtx))
+			ctxKeyString = strings.TrimPrefix(ctxKeyString, "product_")
+
+			argsStr = append(argsStr, fmt.Sprintf("%s = '%v'", ctxKeyString, ctxValue))
+		}
+	}
+
+	whereCondition := ""
+	if len(argsStr) != 0 {
+		whereCondition = "WHERE " + strings.Join(argsStr, " AND ")
+	}
+
+	query := fmt.Sprintf(`
+		SELECT
+			*
+		FROM %s
+		%s`,
+		productTable,
+		whereCondition,
+	)
+
+	row := pr.db.QueryRowContext(ctx, query)
+
+	var product models.Product
+
+	err := row.Scan(&product.Id, &product.UserId, &product.Name, &product.Description, &product.Price)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			err = models.ErrProductNotFound
+		}
+		return models.Product{}, fmt.Errorf("product repos: get one by: %w", err)
+	}
+
+	return product, nil
 }
 
 func (pr *ProductRepos) Update(ctx context.Context, productId uint, product models.ProductUpdate) error {
