@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/acool-kaz/simple-marketplace/internal/models"
+	sortfilter "github.com/acool-kaz/simple-marketplace/pkg/sort_filter"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,6 +16,12 @@ func errorHandler(ctx *gin.Context, err error) {
 	status := http.StatusInternalServerError
 
 	switch {
+	case errors.Is(err, sortfilter.ErrInvalidSortByOrderdirection):
+		fallthrough
+	case errors.Is(err, sortfilter.ErrInvalidSortByQueryParam):
+		fallthrough
+	case errors.Is(err, sortfilter.ErrInvalidSortField):
+		fallthrough
 	case errors.Is(err, models.ErrInvalidProduct):
 		fallthrough
 	case errors.Is(err, models.ErrUserUsernameExist):

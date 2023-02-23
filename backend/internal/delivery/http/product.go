@@ -31,6 +31,13 @@ func (h *Handler) createProductHandler(ctx *gin.Context) {
 }
 
 func (h *Handler) getAllProductsHandler(ctx *gin.Context) {
+	sortBy := ctx.Query("sortBy")
+	if sortBy != "" {
+		ctx.Request = ctx.Request.WithContext(context.WithValue(ctx.Request.Context(), models.ProductSortBy, sortBy))
+	} else {
+		ctx.Request = ctx.Request.WithContext(context.WithValue(ctx.Request.Context(), models.ProductSortBy, "id.asc"))
+	}
+
 	products, err := h.services.Product.GetAll(ctx.Request.Context())
 	if err != nil {
 		errorHandler(ctx, err)

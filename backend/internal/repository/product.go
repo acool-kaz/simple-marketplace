@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/acool-kaz/simple-marketplace/internal/models"
+	sortfilter "github.com/acool-kaz/simple-marketplace/pkg/sort_filter"
 )
 
 type ProductRepos struct {
@@ -41,12 +42,28 @@ func (pr *ProductRepos) Create(ctx context.Context, product models.ProductCreate
 }
 
 func (pr *ProductRepos) GetAll(ctx context.Context) ([]models.Product, error) {
+	sortByQuery := ""
+
+	sortBy := ctx.Value(models.ProductSortBy)
+	if sortBy != nil {
+		sort, err := sortfilter.ValidateAndReturnSortQuery(sortBy.(string), models.ProductSortParams)
+		if err != nil {
+			return nil, fmt.Errorf("product repos: get all: %w", err)
+		}
+
+		sortByQuery = sort
+	}
+
 	query := fmt.Sprintf(`
 		SELECT
 			*
-		FROM %s;`,
+		FROM %s
+		%s;`,
 		productTable,
+		sortByQuery,
 	)
+
+	fmt.Println(query)
 
 	row, err := pr.db.QueryContext(ctx, query)
 	if err != nil {

@@ -31,6 +31,8 @@ type ProductUpdate struct {
 	Price       float64 `json:"price,omitempty"`
 }
 
+var ProductSortParams = []string{"id", "user_id", "name", "description", "price"}
+
 type ProductCtx string
 
 const (
@@ -39,4 +41,7 @@ const (
 	ProductName        ProductCtx = "product_name"
 	ProductDescription ProductCtx = "product_description"
 	ProductPrice       ProductCtx = "product_price"
+
+	ProductSortBy   ProductCtx = "product_sort_by"
+	ProductFilterBy ProductCtx = "product_filter_by"
 )
