@@ -27,5 +27,5 @@ func ValidateAndReturnSortQuery(sortBy string, sortFields []string) (string, err
 		return "", fmt.Errorf("validate and return sort query: %w: should be one of this: %v", ErrInvalidSortField, sortFields)
 	}
 
-	return fmt.Sprintf("%s %s", field, strings.ToUpper(order)), nil
+	return fmt.Sprintf("ORDER BY %s %s", field, strings.ToUpper(order)), nil
 }
