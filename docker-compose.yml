@@ -2,6 +2,19 @@ version: "3.8"
 
 services:
   web:
+    container_name: marketplace-web
+    build:
+      context: ./frontend/
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    links:
+      - db
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api:
     container_name: marketplace-api
     build:
       context: ./backend/
