@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/acool-kaz/simple-marketplace/internal/models"
+	sortfilter "github.com/acool-kaz/simple-marketplace/pkg/sort_filter"
 )
 
 type UserRepos struct {
@@ -41,11 +42,25 @@ func (ur *UserRepos) Create(ctx context.Context, user models.UserSignUp) (uint, 
 }
 
 func (ur *UserRepos) GetAll(ctx context.Context) ([]models.User, error) {
+	sortByQuery := ""
+
+	sortBy := ctx.Value(models.UserSortBy)
+	if sortBy != nil {
+		sort, err := sortfilter.ValidateAndReturnSortQuery(sortBy.(string), models.UserSortParams)
+		if err != nil {
+			return nil, fmt.Errorf("user repos: get all: %w", err)
+		}
+
+		sortByQuery = sort
+	}
+
 	query := fmt.Sprintf(`
 		SELECT
 			*
-		FROM %s`,
+		FROM %s
+		%s;`,
 		userTable,
+		sortByQuery,
 	)
 
 	rows, err := ur.db.QueryContext(ctx, query)

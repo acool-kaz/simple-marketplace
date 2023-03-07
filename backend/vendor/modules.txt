@@ -36,6 +36,9 @@ github.com/goccy/go-json/internal/runtime
 # github.com/golang-jwt/jwt v3.2.2+incompatible
 ## explicit
 github.com/golang-jwt/jwt
+# github.com/google/uuid v1.3.0
+## explicit
+github.com/google/uuid
 # github.com/ilyakaznacheev/cleanenv v1.4.2
 ## explicit; go 1.13
 github.com/ilyakaznacheev/cleanenv

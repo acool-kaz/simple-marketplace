@@ -1,5 +1,7 @@
 package models
 
+import "mime/multipart"
+
 type Product struct {
 	Id          uint    `json:"id,omitempty"`
 	UserId      uint    `json:"user_id,omitempty"`
@@ -19,10 +21,11 @@ type ProductInfo struct {
 }
 
 type ProductCreate struct {
-	UserId      uint    `json:"user_id,omitempty"`
-	Name        string  `json:"name,omitempty" binding:"required"`
-	Description string  `json:"description,omitempty" binding:"required"`
-	Price       float64 `json:"price,omitempty" binding:"required"`
+	UserId      uint                    `from:"user_id" json:"user_id,omitempty"`
+	Name        string                  `from:"name" json:"name,omitempty" binding:"required"`
+	Description string                  `from:"description" json:"description,omitempty" binding:"required"`
+	Price       float64                 `from:"price" json:"price,omitempty" binding:"required"`
+	Images      []*multipart.FileHeader `form:"images"`
 }
 
 type ProductUpdate struct {

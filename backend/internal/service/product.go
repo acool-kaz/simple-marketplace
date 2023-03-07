@@ -28,6 +28,10 @@ func (ps *ProductService) Create(ctx context.Context, user models.User, product 
 		return 0, fmt.Errorf("product service: create: %w", err)
 	}
 
+	// for _, image := range product.Images {
+	// 	filesaver.SaveFile()
+	// }
+
 	return id, nil
 }
 

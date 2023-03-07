@@ -63,8 +63,6 @@ func (pr *ProductRepos) GetAll(ctx context.Context) ([]models.Product, error) {
 		sortByQuery,
 	)
 
-	fmt.Println(query)
-
 	row, err := pr.db.QueryContext(ctx, query)
 	if err != nil {
 		return nil, fmt.Errorf("product repos: get all: %w", err)

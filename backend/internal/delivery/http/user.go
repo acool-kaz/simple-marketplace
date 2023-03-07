@@ -29,6 +29,13 @@ func (h *Handler) adminCreateUserHandler(ctx *gin.Context) {
 }
 
 func (h *Handler) adminGetAllUsersHandler(ctx *gin.Context) {
+	sortBy := ctx.Query("sortBy")
+	if sortBy != "" {
+		ctx.Request = ctx.Request.WithContext(context.WithValue(ctx.Request.Context(), models.UserSortBy, sortBy))
+	} else {
+		ctx.Request = ctx.Request.WithContext(context.WithValue(ctx.Request.Context(), models.UserSortBy, "id.asc"))
+	}
+
 	users, err := h.services.User.GetAll(ctx.Request.Context())
 	if err != nil {
 		errorHandler(ctx, err)

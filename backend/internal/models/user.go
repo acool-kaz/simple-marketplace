@@ -35,6 +35,8 @@ type UserUpdate struct {
 	Password    string `json:"password,omitempty"`
 }
 
+var UserSortParams = []string{"id", "role", "first_name", "second_name", "phone_number", "email", "username", "password"}
+
 type UserCtx string
 
 const (
@@ -46,6 +48,9 @@ const (
 	UserPhoneNumber UserCtx = "user_phone_number"
 	UserUsername    UserCtx = "user_username"
 	UserPassword    UserCtx = "user_password"
+
+	UserSortBy   UserCtx = "user_sort_by"
+	UserFilterBy UserCtx = "user_filter_by"
 )
 
 const (

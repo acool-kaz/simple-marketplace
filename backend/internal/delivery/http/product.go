@@ -13,7 +13,7 @@ func (h *Handler) createProductHandler(ctx *gin.Context) {
 	user := h.getUserFromCtx(ctx)
 
 	var product models.ProductCreate
-	err := ctx.BindJSON(&product)
+	err := ctx.Bind(&product)
 	if err != nil {
 		errorHandler(ctx, err)
 		return
