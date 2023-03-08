@@ -10,9 +10,11 @@ const routes = {
     "/": "/pages/index.html",
     "/about": "/pages/about.html",
     "/lorem": "/pages/lorem.html",
+    "/auth/sign-in": "/pages/login.html",
 };
 
 const handleLocation = async () => {
+    bar();
     const path = window.location.pathname;
     const route = routes[path] || routes[404];
     const html = await fetch(route).then((data) => data.text());

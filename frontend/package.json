@@ -3,6 +3,6 @@
     "http-server": "^14.1.1"
   },
   "scripts": {
-    "start": "./node_modules/.bin/http-server -a localhost -p 8081 -d"
+    "start": "./node_modules/.bin/http-server -p 8081 -d"
   }
 }
