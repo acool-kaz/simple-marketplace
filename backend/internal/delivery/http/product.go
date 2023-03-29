@@ -9,6 +9,37 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func (h *Handler) getProductInfoByIdHandler(ctx *gin.Context) {
+	id, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		errorHandler(ctx, models.ErrProductNotFound)
+		return
+	}
+	ctx.Request = ctx.Request.WithContext(context.WithValue(ctx.Request.Context(), models.ProductId, id))
+
+	products, err := h.services.Product.GetAllInfo(ctx.Request.Context())
+	if err != nil {
+		errorHandler(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": products,
+	})
+}
+
+func (h *Handler) getAllProductsInfoHandler(ctx *gin.Context) {
+	products, err := h.services.Product.GetAllInfo(ctx.Request.Context())
+	if err != nil {
+		errorHandler(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": products,
+	})
+}
+
 func (h *Handler) createProductHandler(ctx *gin.Context) {
 	user := h.getUserFromCtx(ctx)
 

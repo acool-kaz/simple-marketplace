@@ -17,15 +17,24 @@ func (h *Handler) initPublicRoutes(basePath string, router *gin.Engine) {
 			auth.POST("/sign-in", h.signInHandler)
 		}
 
-		product := publicRoutes.Group("/product", h.authMiddleware)
+		product := publicRoutes.Group("/product")
 		{
-			product.POST("", h.createProductHandler)
-			product.GET("", h.getAllProductsHandler)
+			product.GET("", h.getAllProductsInfoHandler)
+
 			id := product.Group("/:id")
 			{
-				id.GET("", h.getProductByIdHandler)
-				id.DELETE("", h.deleteProductHandler)
-				id.PATCH("", h.updateProductHandler)
+				id.GET("", h.getProductInfoByIdHandler)
+			}
+
+			api := product.Group("/api", h.authMiddleware)
+			{
+				api.POST("", h.createProductHandler)
+
+				id := api.Group("/:id")
+				{
+					id.DELETE("", h.deleteProductHandler)
+					id.PATCH("", h.updateProductHandler)
+				}
 			}
 		}
 	}
