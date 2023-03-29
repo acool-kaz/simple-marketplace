@@ -11,6 +11,7 @@ import (
 const (
 	userTable    = "users"
 	productTable = "products"
+	imageTable   = "images"
 )
 
 type User interface {
@@ -29,9 +30,15 @@ type Product interface {
 	Delete(ctx context.Context, productId uint) error
 }
 
+type Image interface {
+	Create(ctx context.Context, image models.ImageCreate) error
+	GetAll(ctx context.Context) ([]models.Image, error)
+}
+
 type Repository struct {
 	User    User
 	Product Product
+	Image   Image
 }
 
 func InitRepository(db *sql.DB) *Repository {
@@ -39,5 +46,6 @@ func InitRepository(db *sql.DB) *Repository {
 	return &Repository{
 		User:    newUserRepos(db),
 		Product: newProductRepos(db),
+		Image:   newImageRepos(db),
 	}
 }
