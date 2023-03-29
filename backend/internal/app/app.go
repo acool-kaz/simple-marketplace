@@ -44,7 +44,7 @@ func InitApp(cfg *config.Config) (*app, error) {
 	}
 
 	repository := repository.InitRepository(db)
-	service := service.InitService(repository)
+	service := service.InitService(repository, cfg)
 
 	httpHandler := http_handler.InitHandler(service)
 

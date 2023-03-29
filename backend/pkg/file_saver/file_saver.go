@@ -1,4 +1,4 @@
-package filesaver
+package file_saver
 
 import (
 	"context"
