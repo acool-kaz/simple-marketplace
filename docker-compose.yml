@@ -20,8 +20,8 @@ services:
       context: ./backend/
       dockerfile: Dockerfile
     environment:
-      - HTTP-PORT=8080
-      - HTTP-HOST=0.0.0.0
+      - HTTP-PORT=8082
+      - HTTP-HOST=localhost
       - HTTP-READTIMEOUT=30
       - HTTP-WRITETIMEOUT=30
       - POSTGRES-HOST=db
