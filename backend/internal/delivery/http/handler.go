@@ -24,6 +24,8 @@ func (h *Handler) InitRoutes() http.Handler {
 
 	router := gin.Default()
 
+	router.Static("/static", "./static")
+
 	h.initPublicRoutes("", router)
 	h.initAdminRoutes("/admin", router)
 
