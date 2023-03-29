@@ -11,20 +11,21 @@ type Product struct {
 }
 
 type ProductInfo struct {
-	ProductId          uint    `json:"product_id,omitempty"`
-	UserId             uint    `json:"user_id,omitempty"`
-	UserUsername       string  `json:"user_username,omitempty"`
-	UserPhoneNumber    string  `json:"user_phone_number,omitempty"`
-	ProductName        string  `json:"product_name,omitempty"`
-	ProductDescription string  `json:"product_description,omitempty"`
-	ProductPrice       float64 `json:"product_price,omitempty"`
+	ProductId          uint     `json:"product_id,omitempty"`
+	UserId             uint     `json:"user_id,omitempty"`
+	UserUsername       string   `json:"user_username,omitempty"`
+	UserPhoneNumber    string   `json:"user_phone_number,omitempty"`
+	ProductName        string   `json:"product_name,omitempty"`
+	ProductDescription string   `json:"product_description,omitempty"`
+	ProductPrice       float64  `json:"product_price,omitempty"`
+	ProductImages      []string `json:"product_images,omitempty"`
 }
 
 type ProductCreate struct {
-	UserId      uint                    `from:"user_id" json:"user_id,omitempty"`
-	Name        string                  `from:"name" json:"name,omitempty" binding:"required"`
-	Description string                  `from:"description" json:"description,omitempty" binding:"required"`
-	Price       float64                 `from:"price" json:"price,omitempty" binding:"required"`
+	UserId      uint                    `form:"user_id" json:"user_id,omitempty"`
+	Name        string                  `form:"name" json:"name,omitempty" binding:"required"`
+	Description string                  `form:"description" json:"description,omitempty" binding:"required"`
+	Price       float64                 `form:"price" json:"price,omitempty" binding:"required"`
 	Images      []*multipart.FileHeader `form:"images"`
 }
 

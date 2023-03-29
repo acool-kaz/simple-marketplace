@@ -3,18 +3,29 @@ package service
 import (
 	"context"
 	"fmt"
+	"log"
+	"os"
+	"strconv"
 
 	"github.com/acool-kaz/simple-marketplace/internal/models"
 	"github.com/acool-kaz/simple-marketplace/internal/repository"
+	filesaver "github.com/acool-kaz/simple-marketplace/pkg/file_saver"
 )
 
 type ProductService struct {
 	productRepos repository.Product
+	imageRepos   repository.Image
+	userRepos    repository.User
+
+	imagePath string
 }
 
-func newProductService(productRepos repository.Product) *ProductService {
+func newProductService(productRepos repository.Product, imageRepos repository.Image, userRepos repository.User, imagePath string) *ProductService {
 	return &ProductService{
 		productRepos: productRepos,
+		imageRepos:   imageRepos,
+		userRepos:    userRepos,
+		imagePath:    imagePath,
 	}
 }
 
@@ -28,11 +39,69 @@ func (ps *ProductService) Create(ctx context.Context, user models.User, product 
 		return 0, fmt.Errorf("product service: create: %w", err)
 	}
 
-	// for _, image := range product.Images {
-	// 	filesaver.SaveFile()
-	// }
+	for _, image := range product.Images {
+		url, err := filesaver.SaveFile(ctx, "./static/product/", strconv.Itoa(int(id)), image)
+		if err != nil {
+			err = ps.Delete(ctx, user, id)
+			if err != nil {
+				log.Printf("product service: create: %v", err)
+			}
+
+			return 0, fmt.Errorf("product service: create: %w", err)
+		}
+
+		err = ps.imageRepos.Create(ctx, models.ImageCreate{ProductId: id, Url: ps.imagePath + url})
+		if err != nil {
+			err = ps.Delete(ctx, user, id)
+			if err != nil {
+				log.Printf("product service: create: %v", err)
+			}
+
+			return 0, fmt.Errorf("product service: create: %w", err)
+		}
+	}
 
 	return id, nil
+}
+
+func (ps *ProductService) GetAllInfo(ctx context.Context) ([]models.ProductInfo, error) {
+	products, err := ps.productRepos.GetAll(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("product service: get all info: %w", err)
+	}
+
+	var productsInfo []models.ProductInfo
+
+	for _, product := range products {
+		user, err := ps.userRepos.GetOneBy(context.WithValue(ctx, models.UserId, product.UserId))
+		if err != nil {
+			return nil, fmt.Errorf("product service: get all info: %w", err)
+		}
+
+		productInfo := models.ProductInfo{
+			ProductId:          product.Id,
+			UserId:             product.UserId,
+			UserUsername:       user.Username,
+			UserPhoneNumber:    user.PhoneNumber,
+			ProductName:        product.Name,
+			ProductDescription: product.Description,
+			ProductPrice:       product.Price,
+			ProductImages:      []string{},
+		}
+
+		images, err := ps.imageRepos.GetAll(context.WithValue(ctx, models.ImageProductId, product.Id))
+		if err != nil {
+			return nil, fmt.Errorf("product service: get all info: %w", err)
+		}
+
+		for _, img := range images {
+			productInfo.ProductImages = append(productInfo.ProductImages, img.Url)
+		}
+
+		productsInfo = append(productsInfo, productInfo)
+	}
+
+	return productsInfo, nil
 }
 
 func (ps *ProductService) GetAll(ctx context.Context) ([]models.Product, error) {
@@ -93,6 +162,11 @@ func (ps *ProductService) Delete(ctx context.Context, user models.User, productI
 	err := ps.productRepos.Delete(ctx, productId)
 	if err != nil {
 		return fmt.Errorf("product service: delete: %w", err)
+	}
+
+	err = os.RemoveAll(fmt.Sprintf("/static/product/%d", productId))
+	if err != nil {
+		log.Printf("product service: delete: %v", err)
 	}
 
 	return nil

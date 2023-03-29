@@ -2,8 +2,10 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"log"
 
+	"github.com/acool-kaz/simple-marketplace/internal/config"
 	"github.com/acool-kaz/simple-marketplace/internal/models"
 	"github.com/acool-kaz/simple-marketplace/internal/repository"
 )
@@ -23,6 +25,7 @@ type User interface {
 }
 
 type Product interface {
+	GetAllInfo(ctx context.Context) ([]models.ProductInfo, error)
 	Create(ctx context.Context, user models.User, product models.ProductCreate) (uint, error)
 	GetAll(ctx context.Context) ([]models.Product, error)
 	GetOneBy(ctx context.Context) (models.Product, error)
@@ -36,11 +39,11 @@ type Service struct {
 	Product Product
 }
 
-func InitService(repos *repository.Repository) *Service {
+func InitService(repos *repository.Repository, cfg *config.Config) *Service {
 	log.Println("init service")
 	return &Service{
 		Auth:    newAuthService(repos.User),
 		User:    newUserService(repos.User),
-		Product: newProductService(repos.Product),
+		Product: newProductService(repos.Product, repos.Image, repos.User, fmt.Sprintf("%s:%s", cfg.HttpConfig.Host, cfg.HttpConfig.Port)),
 	}
 }

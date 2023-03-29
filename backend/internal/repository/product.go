@@ -54,12 +54,33 @@ func (pr *ProductRepos) GetAll(ctx context.Context) ([]models.Product, error) {
 		sortByQuery = sort
 	}
 
+	argsStr := []string{}
+
+	ctxKeys := []interface{}{models.ProductId, models.ProductUserId, models.ProductName, models.ProductDescription, models.ProductPrice}
+
+	for _, ctxKey := range ctxKeys {
+		ctxValue := ctx.Value(ctxKey)
+		if ctxValue != nil {
+			ctxKeyString := string(ctxKey.(models.ProductCtx))
+			ctxKeyString = strings.TrimPrefix(ctxKeyString, "product_")
+
+			argsStr = append(argsStr, fmt.Sprintf("%s = '%v'", ctxKeyString, ctxValue))
+		}
+	}
+
+	whereCondition := ""
+	if len(argsStr) != 0 {
+		whereCondition = "WHERE " + strings.Join(argsStr, " AND ")
+	}
+
 	query := fmt.Sprintf(`
 		SELECT
 			*
 		FROM %s
+		%s
 		%s;`,
 		productTable,
+		whereCondition,
 		sortByQuery,
 	)
 
