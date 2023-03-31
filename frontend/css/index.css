@@ -1,0 +1,105 @@
+.banner {
+    width: 100%;
+    height: 100vh;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    background-image: url('../assets/images/banner.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+}
+
+.text {
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    justify-content: center;
+    text-align: center;
+    color: white;
+}
+
+.text > a {
+    color: white;
+    margin: 0 50px;
+
+    border-bottom: 1px solid white;
+}
+
+.text > a:hover {
+    margin: 0 30px;
+}
+
+.new-products {
+    padding: 50px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.products {
+    margin-top: 30px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.product {
+    width: 200px;
+}
+
+p {
+    padding: 0;
+    margin: 0;
+}
+
+.product-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 200px;
+}
+
+.random-product {
+    width: 100%;
+    height: 110vh;
+    background: #CCCCCC;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 50px;
+}
+
+.left-side {
+    width: 50%;
+}
+
+.right-side {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 15px;
+}
+
+.button {
+    width: 50%;
+    background: #fff;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+
+    transition: background .3s;
+}
+
+.button:hover {
+    background: rgba(0,0,0,.1);
+}
