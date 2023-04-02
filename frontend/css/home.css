@@ -24,14 +24,14 @@
     color: white;
 }
 
-.text > a {
+.text>a {
     color: white;
     margin: 0 50px;
 
     border-bottom: 1px solid white;
 }
 
-.text > a:hover {
+.text>a:hover {
     margin: 0 30px;
 }
 
@@ -108,5 +108,5 @@ p {
 }
 
 .button:hover {
-    background: rgba(0,0,0,.1);
+    background: rgba(0, 0, 0, .1);
 }
