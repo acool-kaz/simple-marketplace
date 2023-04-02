@@ -15,11 +15,13 @@ const routes = {
 
 const handleLocation = async () => {
     const path = window.location.pathname;
+    console.log(path);
     const route = routes[path] || routes[404];
     const html = await fetch(route).then((data) => data.text());
     document.getElementById("main-page").innerHTML = html;
 };
 
+window.onload = handleLocation;
 window.onpopstate = handleLocation;
 window.route = route;
 
