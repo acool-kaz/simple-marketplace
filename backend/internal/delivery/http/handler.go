@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/acool-kaz/simple-marketplace/internal/service"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,6 +24,12 @@ func (h *Handler) InitRoutes() http.Handler {
 	log.Println("init routes")
 
 	router := gin.Default()
+
+	router.Use(cors.New(cors.Config{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{"*"},
+		AllowHeaders: []string{"*"},
+	}))
 
 	router.Static("/static", "./static")
 

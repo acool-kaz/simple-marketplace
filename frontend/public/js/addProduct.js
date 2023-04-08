@@ -1,10 +1,10 @@
 let loader = document.querySelector('.loader')
 
-// window.onload = () => {
-//     if (!localStorage.getItem('token')) {
-//         window.location.href = '/signup'
-//     }
-// }
+window.onload = () => {
+    if (!localStorage.getItem('access_token')) {
+        window.location.href = '/signup'
+    }
+}
 
 const productName = document.querySelector('#product-name')
 const shortDes = document.querySelector('#short-des')
@@ -20,7 +20,7 @@ uploadImages.forEach((fileUpload, index) => {
         var reader = new FileReader();
 
         reader.onload = () => {
-            var imgPath = "url('"+reader.result + "')";
+            var imgPath = "url('" + reader.result + "')";
 
             document.querySelector(`label[for=${fileUpload.id}]`).style.backgroundImage = imgPath
             document.querySelector('.product-image').style.backgroundImage = imgPath
@@ -32,8 +32,21 @@ uploadImages.forEach((fileUpload, index) => {
 
 const addBtn = document.querySelector('#add-btn')
 
-addBtn.addEventListener('click', () => {
-    console.log('send data');
+addBtn.addEventListener('click', async () => {
+    let formData = new FormData();
+
+    formData.append('name', productName.value)
+    formData.append('description', shortDes.value)
+    formData.append('price', price.value)
+
+    uploadImages.forEach(file => {
+        formData.append('images', file.files[0])
+    })
+
+    await sendRequest('/product/api', 'post', formData, true, true)
+    .then(data => {
+        console.log(data);
+    })
 })
 
 const saveBtn = document.querySelectorAll('#save-btn')

@@ -8,7 +8,7 @@ const email = document.querySelector('#email')
 const password = document.querySelector('#password')
 const number = document.querySelector('#number')
 
-submitBtn.addEventListener('click', () => {
+submitBtn.addEventListener('click', async () => {
     if (firstName.value.length < 3) {
         showAllert('first name must be 3 letters long')
     } else if (secondName.value.length < 3) {
@@ -27,29 +27,24 @@ submitBtn.addEventListener('click', () => {
 
     loader.style.display = 'block'
 
-    sendData('http://127.0.0.1:8080/auth/sign-up', {
+    const body = {
         "first_name": firstName.value,
         "second_name": secondName.value,
         "email": email.value,
         "phone_number": number.value,
         "username": username.value,
         "password": password.value,
-    })
-})
+    }
 
-const sendData = (path, data) => {
-    fetch(path, {
-        method: 'post',
-        headers: new Headers({
-            'Content-Type': 'application/json'
-        }),
-        body: JSON.stringify(data)
+    await sendRequest('/auth/sign-up', 'post', body)
+    .then(data => {
+        console.log(data);
     })
-    .then((res) => res.json())
-    .then(response => {
-        console.log(response);
-    })
-}
+
+    setTimeout(() => {
+        window.location.href = '/'
+    }, 3000)
+})
 
 const showAllert = (msg) => {
     document.querySelector('.alert-msg').innerHTML = msg

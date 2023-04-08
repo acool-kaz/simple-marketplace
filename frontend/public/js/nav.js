@@ -26,7 +26,7 @@ const createNav = () => {
 createNav()
 
 window.onload = ()=>{
-    if (localStorage.getItem('token')) {
+    if (localStorage.getItem('access_token')) {
         document.querySelector('.logout').style.display = 'block'
     } else {
         document.querySelector('.logout').style.display = 'none'
@@ -34,7 +34,7 @@ window.onload = ()=>{
 }
 
 const login = () => {
-    if (localStorage.getItem('token')) {
+    if (localStorage.getItem('access_token')) {
         console.log('has token');
     } else {
         window.location.href = '/signup'
@@ -42,7 +42,8 @@ const login = () => {
 }
 
 const logout = () => {
-    localStorage.removeItem('token')
+    localStorage.removeItem('access_token')
+    localStorage.removeItem('refresh_token')
     window.location.href = '/'
 }
 
