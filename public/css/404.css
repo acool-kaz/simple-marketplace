@@ -1,0 +1,15 @@
+.image-404 {
+    display: block;
+    margin: 60px auto;
+}
+
+.msg-404 {
+    text-align: center;
+    text-transform: capitalize;
+    color: #383838;
+    margin-bottom: 60px;
+}
+
+.msg-404 a {
+    color: #383838;
+}
