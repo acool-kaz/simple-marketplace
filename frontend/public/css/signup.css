@@ -29,7 +29,9 @@ body {
     margin: 0 auto 50px;
 }
 
+textarea,
 input[type="text"],
+input[type="number"],
 input[type="email"],
 input[type="password"] {
     display: block;
