@@ -10,12 +10,7 @@ import (
 )
 
 func (h *Handler) getProductInfoByIdHandler(ctx *gin.Context) {
-	id, err := strconv.Atoi(ctx.Param("id"))
-	if err != nil {
-		errorHandler(ctx, models.ErrProductNotFound)
-		return
-	}
-	ctx.Request = ctx.Request.WithContext(context.WithValue(ctx.Request.Context(), models.ProductId, id))
+	ctx.Request = ctx.Request.WithContext(context.WithValue(ctx.Request.Context(), models.ProductId, ctx.Param("id")))
 
 	products, err := h.services.Product.GetAllInfo(ctx.Request.Context())
 	if err != nil {
@@ -28,7 +23,63 @@ func (h *Handler) getProductInfoByIdHandler(ctx *gin.Context) {
 	})
 }
 
+func (h *Handler) getAllNewProductsInfoHandler(ctx *gin.Context) {
+	ctx.Request = ctx.Request.WithContext(context.WithValue(ctx.Request.Context(), models.ProductSortBy, "id.desc"))
+
+	products, err := h.services.Product.GetAllInfo(ctx.Request.Context())
+	if err != nil {
+		errorHandler(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": products,
+	})
+}
+
+func (h *Handler) getAllMenProductsInfoHandler(ctx *gin.Context) {
+	products, err := h.services.Product.GetAllInfo(context.WithValue(ctx.Request.Context(), models.ProductTag, "men"))
+	if err != nil {
+		errorHandler(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": products,
+	})
+}
+
+func (h *Handler) getAllWomenProductsInfoHandler(ctx *gin.Context) {
+	products, err := h.services.Product.GetAllInfo(context.WithValue(ctx.Request.Context(), models.ProductTag, "women"))
+	if err != nil {
+		errorHandler(ctx, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": products,
+	})
+}
+
 func (h *Handler) getAllProductsInfoHandler(ctx *gin.Context) {
+	sortBy := ctx.Query("sort_by")
+	if sortBy != "" {
+		ctx.Request = ctx.Request.WithContext(context.WithValue(ctx.Request.Context(), models.ProductSortBy, sortBy))
+	} else {
+		ctx.Request = ctx.Request.WithContext(context.WithValue(ctx.Request.Context(), models.ProductSortBy, "id.asc"))
+	}
+
+	searchBy := ctx.Query("search_by")
+	if searchBy != "" {
+		reqCtx := context.WithValue(ctx.Request.Context(), models.ProductSearchBy, searchBy)
+		reqCtx = context.WithValue(reqCtx, models.ProductName, searchBy)
+		reqCtx = context.WithValue(reqCtx, models.ProductShortDescription, searchBy)
+		reqCtx = context.WithValue(reqCtx, models.ProductDescription, searchBy)
+		reqCtx = context.WithValue(reqCtx, models.ProductTag, searchBy)
+		reqCtx = context.WithValue(reqCtx, models.IsOrCtx, struct{}{})
+		ctx.Request = ctx.Request.WithContext(reqCtx)
+	}
+
 	products, err := h.services.Product.GetAllInfo(ctx.Request.Context())
 	if err != nil {
 		errorHandler(ctx, err)

@@ -20,6 +20,9 @@ func (h *Handler) initPublicRoutes(basePath string, router *gin.Engine) {
 		product := publicRoutes.Group("/product")
 		{
 			product.GET("", h.getAllProductsInfoHandler)
+			product.GET("/new", h.getAllNewProductsInfoHandler)
+			product.GET("/men", h.getAllMenProductsInfoHandler)
+			product.GET("/women", h.getAllWomenProductsInfoHandler)
 
 			id := product.Group("/:id")
 			{
