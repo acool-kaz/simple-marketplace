@@ -36,7 +36,9 @@ addBtn.addEventListener('click', async () => {
     let formData = new FormData();
 
     formData.append('name', productName.value)
-    formData.append('description', shortDes.value)
+    formData.append('short_description', shortDes.value)
+    formData.append('description', des.value)
+    formData.append('tag', productTag.value)
     formData.append('price', price.value)
 
     uploadImages.forEach(file => {
@@ -44,9 +46,9 @@ addBtn.addEventListener('click', async () => {
     })
 
     await sendRequest('/product/api', 'post', formData, true, true)
-    .then(data => {
-        console.log(data);
-    })
+        .then(data => {
+            console.log(data);
+        })
 })
 
 const saveBtn = document.querySelectorAll('#save-btn')

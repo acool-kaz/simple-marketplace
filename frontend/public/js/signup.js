@@ -37,9 +37,9 @@ submitBtn.addEventListener('click', async () => {
     }
 
     await sendRequest('/auth/sign-up', 'post', body)
-    .then(data => {
-        console.log(data);
-    })
+        .then(data => {
+            console.log(data);
+        })
 
     setTimeout(() => {
         window.location.href = '/'

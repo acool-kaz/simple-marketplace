@@ -16,12 +16,23 @@ const sendRequest = async (path, method, body = {}, auth = false, form = false) 
         headers.append('Authorization', `Bearer ${localStorage.getItem('access_token')}`)
     }
 
-    try {
-        const data = await fetch(host + path, {
+    var params = {}
+
+    if (method === 'get' || method === 'head') {
+        params = {
+            method: method,
+            headers: headers,
+        }
+    } else {
+        params = {
             method: method,
             headers: headers,
             body: sendBody,
-        })
+        }
+    }
+
+    try {
+        const data = await fetch(host + path, params)
 
         return data.json()
     } catch (err) {

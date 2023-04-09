@@ -25,7 +25,7 @@ const createNav = () => {
 
 createNav()
 
-window.onload = ()=>{
+window.onload = () => {
     if (localStorage.getItem('access_token')) {
         document.querySelector('.logout').style.display = 'block'
     } else {
@@ -48,5 +48,5 @@ const logout = () => {
 }
 
 document.querySelector('.search-btn').addEventListener('click', () => {
-    window.location.href = '/search?search_by='+document.querySelector('.search-box').value
+    window.location.href = '/search?search_by=' + document.querySelector('.search-box').value
 })
