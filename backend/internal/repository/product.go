@@ -24,12 +24,12 @@ func newProductRepos(db *sql.DB) *ProductRepos {
 func (pr *ProductRepos) Create(ctx context.Context, product models.ProductCreate) (uint, error) {
 	query := fmt.Sprintf(`
 		INSERT INTO %s
-			(user_id, name, description, price)
+			(user_id, name, short_description, description, tag, price)
 		VALUES
-			('%d', '%s', '%s', '%f')
+			('%v', '%v', '%v', '%v', '%v', '%v')
 		RETURNING id;`,
 		productTable,
-		product.UserId, product.Name, product.Description, product.Price,
+		product.UserId, product.Name, product.ShortDescription, product.Description, product.Tag, product.Price,
 	)
 
 	var id uint
@@ -56,7 +56,9 @@ func (pr *ProductRepos) GetAll(ctx context.Context) ([]models.Product, error) {
 
 	argsStr := []string{}
 
-	ctxKeys := []interface{}{models.ProductId, models.ProductUserId, models.ProductName, models.ProductDescription, models.ProductPrice}
+	isSearchBy := ctx.Value(models.ProductSearchBy)
+
+	ctxKeys := []interface{}{models.ProductId, models.ProductUserId, models.ProductName, models.ProductShortDescription, models.ProductDescription, models.ProductTag, models.ProductPrice}
 
 	for _, ctxKey := range ctxKeys {
 		ctxValue := ctx.Value(ctxKey)
@@ -64,13 +66,23 @@ func (pr *ProductRepos) GetAll(ctx context.Context) ([]models.Product, error) {
 			ctxKeyString := string(ctxKey.(models.ProductCtx))
 			ctxKeyString = strings.TrimPrefix(ctxKeyString, "product_")
 
-			argsStr = append(argsStr, fmt.Sprintf("%s = '%v'", ctxKeyString, ctxValue))
+			if isSearchBy != nil {
+				argsStr = append(argsStr, fmt.Sprintf("%s LIKE '%%%v%%'", ctxKeyString, ctxValue))
+			} else {
+				argsStr = append(argsStr, fmt.Sprintf("%s = '%v'", ctxKeyString, ctxValue))
+			}
 		}
 	}
 
+	isOr := ctx.Value(models.IsOrCtx)
+
 	whereCondition := ""
 	if len(argsStr) != 0 {
-		whereCondition = "WHERE " + strings.Join(argsStr, " AND ")
+		if isOr != nil {
+			whereCondition = "WHERE " + strings.Join(argsStr, " OR ")
+		} else {
+			whereCondition = "WHERE " + strings.Join(argsStr, " AND ")
+		}
 	}
 
 	query := fmt.Sprintf(`
@@ -95,7 +107,7 @@ func (pr *ProductRepos) GetAll(ctx context.Context) ([]models.Product, error) {
 	for row.Next() {
 		var product models.Product
 
-		err = row.Scan(&product.Id, &product.UserId, &product.Name, &product.Description, &product.Price)
+		err = row.Scan(&product.Id, &product.UserId, &product.Name, &product.ShortDescription, &product.Description, &product.Tag, &product.Price)
 		if err != nil {
 			return nil, fmt.Errorf("product repos: get all: %w", err)
 		}
@@ -139,7 +151,7 @@ func (pr *ProductRepos) GetOneBy(ctx context.Context) (models.Product, error) {
 
 	var product models.Product
 
-	err := row.Scan(&product.Id, &product.UserId, &product.Name, &product.Description, &product.Price)
+	err := row.Scan(&product.Id, &product.UserId, &product.Name, &product.ShortDescription, &product.Description, &product.Tag, &product.Price)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			err = models.ErrProductNotFound

@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/acool-kaz/simple-marketplace/internal/models"
 	"github.com/acool-kaz/simple-marketplace/internal/repository"
@@ -33,6 +34,11 @@ func (ps *ProductService) Create(ctx context.Context, user models.User, product 
 	if user.Role == models.UserRoleInfo {
 		product.UserId = user.Id
 	}
+
+	product.Name = strings.ToLower(product.Name)
+	product.ShortDescription = strings.ToLower(product.ShortDescription)
+	product.Description = strings.ToLower(product.Description)
+	product.Tag = strings.ToLower(product.Tag)
 
 	id, err := ps.productRepos.Create(ctx, product)
 	if err != nil {
@@ -79,14 +85,16 @@ func (ps *ProductService) GetAllInfo(ctx context.Context) ([]models.ProductInfo,
 		}
 
 		productInfo := models.ProductInfo{
-			ProductId:          product.Id,
-			UserId:             product.UserId,
-			UserUsername:       user.Username,
-			UserPhoneNumber:    user.PhoneNumber,
-			ProductName:        product.Name,
-			ProductDescription: product.Description,
-			ProductPrice:       product.Price,
-			ProductImages:      []string{},
+			ProductId:               product.Id,
+			UserId:                  product.UserId,
+			UserUsername:            user.Username,
+			UserPhoneNumber:         user.PhoneNumber,
+			ProductName:             product.Name,
+			ProductShortDescription: product.ShortDescription,
+			ProductDescription:      product.Description,
+			ProductTag:              product.Tag,
+			ProductPrice:            product.Price,
+			ProductImages:           []string{},
 		}
 
 		images, err := ps.imageRepos.GetAll(context.WithValue(ctx, models.ImageProductId, product.Id))
