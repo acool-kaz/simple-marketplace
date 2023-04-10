@@ -19,7 +19,6 @@ const productCard = (product) => {
 
 const getMenProducts = async () => {
     const menContainer = document.querySelector('.men')
-    menContainer.innerHTML = ''
     await sendRequest('/product/men', 'get')
         .then(data => {
             if (data.status >= 400) {
@@ -32,7 +31,6 @@ getMenProducts()
 
 const getWomenProducts = async () => {
     const womenContainer = document.querySelector('.women')
-    womenContainer.innerHTML = ''
     await sendRequest('/product/women', 'get')
         .then(data => {
             if (data.status >= 400) {

@@ -34,7 +34,6 @@ const getSearchedProducts = async () => {
     }
 
     const menContainer = document.querySelector('.searched')
-    menContainer.innerHTML = ''
     await sendRequest(path, 'get')
         .then(data => {
             if (data.status >= 400) {

@@ -106,7 +106,9 @@ func (ps *ProductService) GetAllInfo(ctx context.Context) ([]models.ProductInfo,
 			productInfo.ProductImages = append(productInfo.ProductImages, img.Url)
 		}
 
-		productInfo.ProductPromoImage = images[0].Url
+		if len(images) > 0 {
+			productInfo.ProductPromoImage = images[0].Url
+		}
 
 		productsInfo = append(productsInfo, productInfo)
 	}
