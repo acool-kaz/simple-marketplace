@@ -47,7 +47,15 @@ addBtn.addEventListener('click', async () => {
 
     await sendRequest('/product/api', 'post', formData, true, true)
         .then(data => {
-            console.log(data);
+            if (data.status >= 400) {
+                showAllert(data.msg)
+            } else {
+                loader.style.display = 'block'
+                
+                setTimeout(() => {
+                    window.location.href = '/'
+                }, 3000)
+            }
         })
 })
 

@@ -51,9 +51,15 @@ func (as *AuthService) SignIn(ctx context.Context, user models.UserSignIn) (stri
 		err     error
 	)
 
+	ctx = context.WithValue(ctx, models.UserPassword, user.Password)
+
 	if user.Email != "" {
-		curUser, err = as.userRepos.GetOneBy(context.WithValue(ctx, models.UserEmail, user.Email))
+		ctx = context.WithValue(ctx, models.UserEmail, user.Email)
+
+		curUser, err = as.userRepos.GetOneBy(ctx)
 	} else if user.Username != "" {
+		ctx = context.WithValue(ctx, models.UserUsername, user.Username)
+
 		curUser, err = as.userRepos.GetOneBy(context.WithValue(ctx, models.UserUsername, user.Username))
 	} else {
 		return "", "", fmt.Errorf("auth service: sing in: %w", models.ErrUserNotFound)
@@ -61,10 +67,6 @@ func (as *AuthService) SignIn(ctx context.Context, user models.UserSignIn) (stri
 
 	if err != nil {
 		return "", "", fmt.Errorf("auth service: sign in: %w", err)
-	}
-
-	if curUser.Password != user.Password {
-		return "", "", fmt.Errorf("auth service: sign in: %w", models.ErrUserNotFound)
 	}
 
 	access, err := newAccessToken(curUser.Id, curUser.Role)

@@ -22,9 +22,13 @@ const getNewProducts = async () => {
     newContainer.innerHTML = ''
     await sendRequest('/product/new', 'get')
         .then(data => {
-            data.data.forEach(product => {
-                newContainer.innerHTML += productCard(product)
-            })
+            if (data.status >= 400) {
+                alert(data.msg)
+            } else {
+                data.data.forEach(product => {
+                    newContainer.innerHTML += productCard(product)
+                })
+            }
         })
 }
 
@@ -35,9 +39,13 @@ const getMenProducts = async () => {
     menContainer.innerHTML = ''
     await sendRequest('/product/men', 'get')
         .then(data => {
-            data.data.forEach(product => {
-                menContainer.innerHTML += productCard(product)
-            })
+            if (data.status >= 400) {
+                alert(data.msg)
+            } else {
+                data.data.forEach(product => {
+                    menContainer.innerHTML += productCard(product)
+                })
+            }
         })
 }
 
@@ -48,9 +56,13 @@ const getWomenProducts = async () => {
     womenContainer.innerHTML = ''
     await sendRequest('/product/women', 'get')
         .then(data => {
-            data.data.forEach(product => {
-                womenContainer.innerHTML += productCard(product)
-            })
+            if (data.status >= 400) {
+                alert(data.msg)
+            } else {
+                data.data.forEach(product => {
+                    womenContainer.innerHTML += productCard(product)
+                })
+            }
         })
 }
 

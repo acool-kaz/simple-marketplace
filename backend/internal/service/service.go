@@ -44,6 +44,6 @@ func InitService(repos *repository.Repository, cfg *config.Config) *Service {
 	return &Service{
 		Auth:    newAuthService(repos.User),
 		User:    newUserService(repos.User),
-		Product: newProductService(repos.Product, repos.Image, repos.User, fmt.Sprintf("%s:%s", cfg.HttpConfig.Host, cfg.HttpConfig.Port)),
+		Product: newProductService(repos.Product, repos.Image, repos.User, fmt.Sprintf("http://%s:%s", cfg.HttpConfig.Host, cfg.HttpConfig.Port)),
 	}
 }

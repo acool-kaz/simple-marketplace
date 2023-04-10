@@ -22,9 +22,13 @@ const getMenProducts = async () => {
     menContainer.innerHTML = ''
     await sendRequest('/product/men', 'get')
         .then(data => {
-            data.data.forEach(product => {
-                menContainer.innerHTML += productCard(product)
-            })
+            if (data.status >= 400) {
+                alert(data.msg)
+            } else {
+                data.data.forEach(product => {
+                    menContainer.innerHTML += productCard(product)
+                })
+            }
         })
 }
 
@@ -35,9 +39,13 @@ const getWomenProducts = async () => {
     womenContainer.innerHTML = ''
     await sendRequest('/product/women', 'get')
         .then(data => {
-            data.data.forEach(product => {
-                womenContainer.innerHTML += productCard(product)
-            })
+            if (data.status >= 400) {
+                alert(data.msg)
+            } else {
+                data.data.forEach(product => {
+                    womenContainer.innerHTML += productCard(product)
+                })
+            }
         })
 }
 
@@ -53,7 +61,11 @@ const getCurProduct = async () => {
 
     await sendRequest(`/product/${value}`, 'get')
         .then(data => {
-            curProduct = data.data[0]
+            if (data.status >= 400) {
+                alert(data.msg)
+            } else {
+                curProduct = data.data[0]
+            }
         })
 
     document.querySelector('.product-images').style.gridTemplateColumns = `repeat(${curProduct.product_images.length}, auto)`

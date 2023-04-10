@@ -25,8 +25,6 @@ submitBtn.addEventListener('click', async () => {
         showAllert('invalid phone number')
     }
 
-    loader.style.display = 'block'
-
     const body = {
         "first_name": firstName.value,
         "second_name": secondName.value,
@@ -38,12 +36,17 @@ submitBtn.addEventListener('click', async () => {
 
     await sendRequest('/auth/sign-up', 'post', body)
         .then(data => {
-            console.log(data);
+            if (data.status >= 400) {
+                showAllert(data.msg)
+            } else {
+                loader.style.display = 'block'
+
+                setTimeout(() => {
+                    window.location.href = '/'
+                }, 3000)
+            }
         })
 
-    setTimeout(() => {
-        window.location.href = '/'
-    }, 3000)
 })
 
 const showAllert = (msg) => {
