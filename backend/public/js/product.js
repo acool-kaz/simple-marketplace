@@ -24,10 +24,6 @@ const getMenProducts = async () => {
         .then(data => {
             if (data.status >= 400) {
                 alert(data.msg)
-            } else if (data.data !== null) {
-                data.data.forEach(product => {
-                    menContainer.innerHTML += productCard(product)
-                })
             }
         })
 }
@@ -41,10 +37,6 @@ const getWomenProducts = async () => {
         .then(data => {
             if (data.status >= 400) {
                 alert(data.msg)
-            } else if (data.data !== null) {
-                data.data.forEach(product => {
-                    womenContainer.innerHTML += productCard(product)
-                })
             }
         })
 }
@@ -63,8 +55,6 @@ const getCurProduct = async () => {
         .then(data => {
             if (data.status >= 400) {
                 alert(data.msg)
-            } else if (data.data !== null) {
-                curProduct = data.data[0]
             }
         })
 

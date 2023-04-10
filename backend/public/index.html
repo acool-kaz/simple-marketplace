@@ -21,7 +21,24 @@
         <h2 class="product-category" id="new">new products</h2>
         <button class="pre-btn"><img src="/img/arrow.png" alt=""></button>
         <button class="nxt-btn"><img src="/img/arrow.png" alt=""></button>
-        <div class="product-container new"></div>
+        <div class="product-container new">
+            {{ range .New }}
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="{{ .ProductPromoImage }}" class="product-thumb" alt="">
+                    <div class="product-buttons">
+                        <button class="card-btn">add to cart</button>
+                        <button class="card-btn" onclick="window.location.href = '/web/product?id={{ .ProductId }}'">more info</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h2 class="product-brand">{{ .ProductName }}</h2>
+                    <p class="product-short-des">{{ .ProductShortDescription }}</p>
+                    <span class="price">{{ .ProductPrice }}$</span>
+                </div>
+            </div>
+            {{ end }}
+        </div>
         <button class="more-btn" onclick="window.location.href = '/web/search?search_by=new'">more...</button>
     </section>
 
@@ -44,7 +61,24 @@
         <h2 class="product-category">men products</h2>
         <button class="pre-btn"><img src="/img/arrow.png" alt=""></button>
         <button class="nxt-btn"><img src="/img/arrow.png" alt=""></button>
-        <div class="product-container men"></div>
+        <div class="product-container men">
+            {{ range .Men }}
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="{{ .ProductPromoImage }}" class="product-thumb" alt="">
+                    <div class="product-buttons">
+                        <button class="card-btn">add to cart</button>
+                        <button class="card-btn" onclick="window.location.href = '/web/product?id={{ .ProductId }}'">more info</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h2 class="product-brand">{{ .ProductName }}</h2>
+                    <p class="product-short-des">{{ .ProductShortDescription }}</p>
+                    <span class="price">{{ .ProductPrice }}$</span>
+                </div>
+            </div>
+            {{ end }}
+        </div>
         <button class="more-btn" onclick="window.location.href = '/web/search?search_by=men'">more...</button>
     </section>
 
@@ -52,7 +86,24 @@
         <h2 class="product-category">women products</h2>
         <button class="pre-btn"><img src="/img/arrow.png" alt=""></button>
         <button class="nxt-btn"><img src="/img/arrow.png" alt=""></button>
-        <div class="product-container women"></div>
+        <div class="product-container women">
+            {{ range .Women }}
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="{{ .ProductPromoImage }}" class="product-thumb" alt="">
+                    <div class="product-buttons">
+                        <button class="card-btn">add to cart</button>
+                        <button class="card-btn" onclick="window.location.href = '/web/product?id={{ .ProductId }}'">more info</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h2 class="product-brand">{{ .ProductName }}</h2>
+                    <p class="product-short-des">{{ .ProductShortDescription }}</p>
+                    <span class="price">{{ .ProductPrice }}$</span>
+                </div>
+            </div>
+            {{ end }}
+        </div>
         <button class="more-btn" onclick="window.location.href = '/web/search?search_by=women'">more...</button>
     </section>
 

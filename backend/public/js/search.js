@@ -39,10 +39,6 @@ const getSearchedProducts = async () => {
         .then(data => {
             if (data.status >= 400) {
                 alert(data.msg)
-            } else {
-                data.data.forEach(product => {
-                    menContainer.innerHTML += productCard(product)
-                })
             }
         })
 }

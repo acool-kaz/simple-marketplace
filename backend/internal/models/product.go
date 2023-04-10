@@ -22,6 +22,7 @@ type ProductInfo struct {
 	ProductDescription      string   `json:"product_description,omitempty"`
 	ProductTag              string   `json:"product_tag,omitempty"`
 	ProductPrice            float64  `json:"product_price,omitempty"`
+	ProductPromoImage       string   `json:"product_promo_image,omitempty"`
 	ProductImages           []string `json:"product_images,omitempty"`
 }
 

@@ -24,9 +24,7 @@ func (h *Handler) getProductInfoByIdHandler(ctx *gin.Context) {
 }
 
 func (h *Handler) getAllNewProductsInfoHandler(ctx *gin.Context) {
-	ctx.Request = ctx.Request.WithContext(context.WithValue(ctx.Request.Context(), models.ProductSortBy, "id.desc"))
-
-	products, err := h.services.Product.GetAllInfo(ctx.Request.Context())
+	products, err := h.services.Product.GetAllInfo(context.WithValue(ctx.Request.Context(), models.ProductSortBy, "id.desc"))
 	if err != nil {
 		errorHandler(ctx, err)
 		return
