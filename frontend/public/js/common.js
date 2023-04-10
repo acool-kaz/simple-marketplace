@@ -39,3 +39,7 @@ const sendRequest = async (path, method, body = {}, auth = false, form = false) 
         alert(err)
     }
 }
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}

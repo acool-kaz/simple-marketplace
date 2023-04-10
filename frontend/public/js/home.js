@@ -24,7 +24,7 @@ const getNewProducts = async () => {
         .then(data => {
             if (data.status >= 400) {
                 alert(data.msg)
-            } else {
+            } else if (data.data !== null) {
                 data.data.forEach(product => {
                     newContainer.innerHTML += productCard(product)
                 })
@@ -41,7 +41,7 @@ const getMenProducts = async () => {
         .then(data => {
             if (data.status >= 400) {
                 alert(data.msg)
-            } else {
+            } else if (data.data !== null) {
                 data.data.forEach(product => {
                     menContainer.innerHTML += productCard(product)
                 })
@@ -58,7 +58,7 @@ const getWomenProducts = async () => {
         .then(data => {
             if (data.status >= 400) {
                 alert(data.msg)
-            } else {
+            } else if (data.data !== null) {
                 data.data.forEach(product => {
                     womenContainer.innerHTML += productCard(product)
                 })

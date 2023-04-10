@@ -24,7 +24,7 @@ const getMenProducts = async () => {
         .then(data => {
             if (data.status >= 400) {
                 alert(data.msg)
-            } else {
+            } else if (data.data !== null) {
                 data.data.forEach(product => {
                     menContainer.innerHTML += productCard(product)
                 })
@@ -41,7 +41,7 @@ const getWomenProducts = async () => {
         .then(data => {
             if (data.status >= 400) {
                 alert(data.msg)
-            } else {
+            } else if (data.data !== null) {
                 data.data.forEach(product => {
                     womenContainer.innerHTML += productCard(product)
                 })
@@ -63,7 +63,7 @@ const getCurProduct = async () => {
         .then(data => {
             if (data.status >= 400) {
                 alert(data.msg)
-            } else {
+            } else if (data.data !== null) {
                 curProduct = data.data[0]
             }
         })
@@ -82,20 +82,26 @@ const getCurProduct = async () => {
 
 getCurProduct()
 
-const productImages = document.querySelectorAll('.product-images img')
-const productImageSlider = document.querySelector('.image-slider')
+const imageSlider = async () => {
+    await sleep(100)
 
-document.querySelector('.product-images').style.gridTemplateColumns = `repeat(${productImages.length}, 1fr)`
+    const productImages = document.querySelectorAll('.product-images img')
+    const productImageSlider = document.querySelector('.image-slider')
 
-let activeImageSilder = 0
-productImages[activeImageSilder].classList.add('active')
-productImageSlider.style.backgroundImage = `url(${productImages[activeImageSilder].src})`
+    document.querySelector('.product-images').style.gridTemplateColumns = `repeat(${productImages.length}, 1fr)`
 
-productImages.forEach((item, i) => {
-    item.addEventListener('click', () => {
-        productImages[activeImageSilder].classList.remove('active')
-        item.classList.add('active')
-        productImageSlider.style.backgroundImage = `url(${item.src})`
-        activeImageSilder = i
+    let activeImageSilder = 0
+    productImages[activeImageSilder].classList.add('active')
+    productImageSlider.style.backgroundImage = `url(${productImages[activeImageSilder].src})`
+
+    productImages.forEach((item, i) => {
+        item.addEventListener('click', () => {
+            productImages[activeImageSilder].classList.remove('active')
+            item.classList.add('active')
+            productImageSlider.style.backgroundImage = `url(${item.src})`
+            activeImageSilder = i
+        })
     })
-})
+}
+
+imageSlider()
