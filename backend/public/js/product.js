@@ -83,7 +83,7 @@ const getCurProduct = async () => {
 getCurProduct()
 
 const imageSlider = async () => {
-    await sleep(100)
+    await sleep(1000)
 
     const productImages = document.querySelectorAll('.product-images img')
     const productImageSlider = document.querySelector('.image-slider')

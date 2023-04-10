@@ -3,6 +3,7 @@ package http
 import (
 	"log"
 	"net/http"
+	"text/template"
 
 	"github.com/acool-kaz/simple-marketplace/internal/service"
 	"github.com/gin-contrib/cors"
@@ -11,12 +12,14 @@ import (
 
 type Handler struct {
 	services *service.Service
+	tmpl     *template.Template
 }
 
 func InitHandler(svc *service.Service) *Handler {
 	log.Println("init handler")
 	return &Handler{
 		services: svc,
+		tmpl:     template.Must(template.ParseGlob("./public/*.html")),
 	}
 }
 

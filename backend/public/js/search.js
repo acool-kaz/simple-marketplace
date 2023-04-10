@@ -23,6 +23,8 @@ const getSearchedProducts = async () => {
     });
     let value = params.search_by;
 
+    document.querySelector('.heading span').innerHTML = value
+
     let path = ''
 
     if (value === null) {

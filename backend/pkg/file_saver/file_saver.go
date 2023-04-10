@@ -6,9 +6,6 @@ import (
 	"io"
 	"mime/multipart"
 	"os"
-	"strings"
-
-	"github.com/google/uuid"
 )
 
 func SaveFile(ctx context.Context, savePath, dir string, fileHeader *multipart.FileHeader) (string, error) {
@@ -24,12 +21,7 @@ func SaveFile(ctx context.Context, savePath, dir string, fileHeader *multipart.F
 	}
 	defer file.Close()
 
-	temp := strings.Split(fileHeader.Filename, ".")
-
-	fileType := temp[len(temp)-1]
-	fileName := uuid.NewString()
-
-	savePath += "/" + fileName + "." + fileType
+	savePath += "/" + fileHeader.Filename
 
 	out, err := os.Create(savePath)
 	if err != nil {
