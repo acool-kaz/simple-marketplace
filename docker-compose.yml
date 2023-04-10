@@ -1,21 +1,21 @@
 version: "3.8"
 
 services:
-  web:
-    container_name: marketplace-web
-    build:
-      context: ./frontend/
-      dockerfile: Dockerfile
-    environment:
-      - PORT=3000
-      - API_PORT=8080
-    ports:
-      - "3000:3000"
-    links:
-      - db
-    depends_on:
-      db:
-        condition: service_healthy
+  # web:
+  #   container_name: marketplace-web
+  #   build:
+  #     context: ./frontend/
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     - PORT=3000
+  #     - API_PORT=8080
+  #   ports:
+  #     - "3000:3000"
+  #   links:
+  #     - db
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
 
   api:
     container_name: marketplace-api

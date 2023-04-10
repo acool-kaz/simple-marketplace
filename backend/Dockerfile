@@ -7,4 +7,5 @@ FROM alpine
 WORKDIR /app
 COPY --from=builder ./app/server .
 COPY --from=builder ./app/vendor/ ./vendor/
+COPY --from=builder ./app/public/ ./public/
 CMD ["./server"]

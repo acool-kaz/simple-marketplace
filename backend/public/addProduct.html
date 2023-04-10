@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product</title>
+    <link rel="stylesheet" href="/css/signup.css">
+    <link rel="stylesheet" href="/css/addProduct.css">
+</head>
+<body>
+    <img src="/img/loader.gif" class="loader" alt="">
+    <div class="alert-box">
+        <img src="/img/error.png" class="alert-img" alt="">
+        <p class="alert-msg">Error message</p>
+        <button class="alert-btn">ok</button>
+    </div>
+
+    <a href="/web"><img src="/img/dark-logo.png" alt="" class="logo"></a>
+
+    <div class="form">
+        <input type="text" id="product-name" maxlength="50" placeholder="product name">
+        <input type="text" id="short-des" maxlength="100" placeholder="shor line about the product">
+        <textarea id="des" placeholder="detail description"></textarea>
+
+        <div class="product-info">
+            <div class="product-image"><p class="text">product image</p><img class="product-image-main" alt=""></div>
+            <div class="upload-image-sec">
+                <p class="text"><img src="/img/camera.png" alt="">upload image</p>
+                <div class="upload-catalouge">
+                    <input type="file" class="fileupload" id="first-file-upload-btn" hidden>
+                    <label for="first-file-upload-btn" class="upload-image"></label>
+
+                    <input type="file" class="fileupload" id="second-file-upload-btn" hidden>
+                    <label for="second-file-upload-btn" class="upload-image"></label>
+
+                    <input type="file" class="fileupload" id="third-file-upload-btn" hidden>
+                    <label for="third-file-upload-btn" class="upload-image"></label>
+
+                    <input type="file" class="fileupload" id="fourth-file-upload-btn" hidden>
+                    <label for="fourth-file-upload-btn" class="upload-image"></label>
+                </div>
+            </div>
+
+            <div class="product-add-info">
+                <input type="number" id="price" placeholder="price">
+                
+                <input type="text" id="product-tag" placeholder="tag" list="tags">
+                <datalist id="tags" role="listbox">
+                    <option value="Men"></option>
+                    <option value="Women"></option>
+                    <option value="Kids"></option>
+                    <option value="Tech"></option>
+                </datalist>
+
+                <div class="buttons">
+                    <button class="btn" id="add-btn">add product</button>
+                    <button class="btn" id="save-btn">save draft</button>
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/addProduct.js"></script>
+</body>
+</html>

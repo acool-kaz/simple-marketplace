@@ -25,6 +25,10 @@ func (h *Handler) InitRoutes() http.Handler {
 
 	router := gin.Default()
 
+	router.GET("/", func(ctx *gin.Context) {
+		ctx.Redirect(http.StatusSeeOther, "/web")
+	})
+
 	router.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"*"},
 		AllowMethods: []string{"*"},
@@ -32,6 +36,8 @@ func (h *Handler) InitRoutes() http.Handler {
 	}))
 
 	router.Static("/static", "./static")
+
+	h.initFronendRoutes("/web", router)
 
 	h.initPublicRoutes("", router)
 	h.initAdminRoutes("/admin", router)

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product - </title>
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/product.css">
+</head>
+<body>
+    
+    <nav class="navbar"></nav>
+
+    <section class="product-details">
+        <div class="image-slider">
+            <div class="product-images"></div>
+        </div>
+        <div class="details">
+            <h2 class="product-brand"></h2>
+            <p class="product-short-des"></p>
+            <span class="product-price"></span>
+            <div class="buttons">
+                <button class="btn cart-btn">add to cart</button>
+                <button class="btn">add to wishlist</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="detail-des">
+        <h2 class="heading">description</h2>
+        <p class="des"></p>
+    </section>
+
+    <section class="product" id="men">
+        <h2 class="product-category">men products</h2>
+        <button class="pre-btn"><img src="/img/arrow.png" alt=""></button>
+        <button class="nxt-btn"><img src="/img/arrow.png" alt=""></button>
+        <div class="product-container men"></div>
+        <button class="more-btn" onclick="window.location.href = '/web/search?category=men'">more...</button>
+    </section>
+
+    <section class="product" id="women">
+        <h2 class="product-category">women products</h2>
+        <button class="pre-btn"><img src="/img/arrow.png" alt=""></button>
+        <button class="nxt-btn"><img src="/img/arrow.png" alt=""></button>
+        <div class="product-container women"></div>
+        <button class="more-btn" onclick="window.location.href = '/web/search?category=women'">more...</button>
+    </section>
+
+    <footer></footer>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/nav.js"></script>
+    <script src="/js/footer.js"></script>
+    <script src="/js/product.js"></script>
+    <script src="/js/product-slider.js"></script>
+</body>
+</html>
