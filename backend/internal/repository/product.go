@@ -26,19 +26,18 @@ func (pr *ProductRepos) Create(ctx context.Context, product models.ProductCreate
 		INSERT INTO %s
 			(user_id, name, short_description, description, tag, price)
 		VALUES
-			('%v', '%v', '%v', '%v', '%v', '%v')
+			($1, $2, $3, $4, $5, $6)
 		RETURNING id;`,
 		productTable,
-		product.UserId, product.Name, product.ShortDescription, product.Description, product.Tag, product.Price,
 	)
 
 	var id uint
-	err := pr.db.QueryRowContext(ctx, query).Scan(&id)
+	err := pr.db.QueryRowContext(ctx, query, product.UserId, product.Name, product.ShortDescription, product.Description, product.Tag, product.Price).Scan(&id)
 	if err != nil {
 		return 0, fmt.Errorf("product repos: create: %w", err)
 	}
 
-	return id, err
+	return id, nil
 }
 
 func (pr *ProductRepos) GetAll(ctx context.Context) ([]models.Product, error) {
